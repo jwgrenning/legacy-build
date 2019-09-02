@@ -1,0 +1,17 @@
+1>------ Build started: Project: AllTests, Configuration: Debug Win32 ------
+1>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(452,5): warning MSB8028: The intermediate directory (.\Debug\) contains files shared from another project (ProductionCodeLib.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+1>states.c
+1>C:\Users\bagins\Documents\Local Project Copies\EPM\branches\EPM3 V003 Inline\states.c(1011,15): warning C4013:  '_EINT' undefined; assuming extern returning int
+1>C:\Users\bagins\Documents\Local Project Copies\EPM\branches\EPM3 V003 Inline\states.c(1814,42): warning C4013:  'RadioLeaveNetwork' undefined; assuming extern returning int
+1>C:\Users\bagins\Documents\Local Project Copies\EPM\branches\EPM3 V003 Inline\states.c(1814,42): warning C4013: C:\Users\bagins\Documents\Local Project Copies\EPM\branches\EPM3 V003 Inline\states.c(3543) : warning C4700: uninitialized local variable 'error' used
+1>AllTests.cpp
+1>ExampleTest.cpp
+1>MyFirstTest.cpp
+1>Generating Code...
+1>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(452,5): warning MSB8028: The intermediate directory (.\Debug\) contains files shared from another project (AllTests.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+1>Done building project "ProductionCodeLib.vcxproj".
+1>states.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
+1>states.obj : error LNK2019: unresolved external symbol _errorHalt referenced in function _State_Update
+1>states.obj : error LNK2019: unresolved external symbol _Add_double referenced in function _State_Update
+1>states.obj : error LNK2019: unresolved external symbol _Get_Digit_UINT32 referenced in function _State_Update_BatchDispense
+1>states.obj : error LNK2019: unresolved external symbol _Set_Digit_UINT16 referenced in function _State_Update_BatchDispense
