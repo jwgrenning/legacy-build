@@ -1,26 +1,36 @@
 Building build/test_WebServer
-g++ -Wall -DQNX_BUILD -Wno-narrowing -DEOK=0 -DTEST -Wfatal-errors -D__LITTLEENDIAN__ -D__X86__ -D__LINUX__ -D__i386 -include forced_include.h -I../../../include/catch -I../ -I./ -I./fake_includes -I /usr/include/ -I../../..//Libraries/AcmeDatabase/exports -I../../..//Libraries/AcmeWpa/exports -I../../..//Libraries/AcmeSocket/exports -I../../..//Libraries/AcmeCrypto/exports -I../../..//Libraries/AcmeJSON/exports -I../../..//Libraries/AcmeLog/exports -I../../..//Libraries/AcmeNeutrino/exports -I../../..//include ../EasyConnect.cpp -o build/test_WebServer ./build/test_WebServer.o
-../EasyConnect.cpp: In function ‘bool Cloudserver1LinkRequest(const string&, const string&, std::__cxx11::string*)’:
-../EasyConnect.cpp:510:64: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has type ‘std::__cxx11::basic_string<char>::size_type {aka long unsigned int}’ [-Wformat=]
+g++ -Wall -DQNX_BUILD -Wno-narrowing -DEOK=0 -DTEST -Wfatal-errors -D__LITTLEENDIAN__ -D__X86__ -D__LINUX__ -D__i386 -include forced_include.h -I../../../include/catch -I../ -I./ -I./fake_includes -I /usr/include/ -I../../..//Libraries/AcmeDatabase/exports -I../../..//Libraries/AcmeWpa/exports -I../../..//Libraries/AcmeSocket/exports -I../../..//Libraries/AcmeCrypto/exports -I../../..//Libraries/AcmeJSON/exports -I../../..//Libraries/AcmeLog/exports -I../../..//Libraries/AcmeNeutrino/exports -I../../..//include ../HardConnect.cpp -o build/test_WebServer ./build/test_WebServer.o
+../HardConnect.cpp: In function ‘bool Cloudserver1LinkRequest(const string&, const string&, std::__cxx11::string*)’:
+../HardConnect.cpp:510:64: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has type ‘std::__cxx11::basic_string<char>::size_type {aka long unsigned int}’ [-Wformat=]
 snprintf(tempBuffer, sizeof( tempBuffer ), "%d", body.length());
 ^
-../EasyConnect.cpp:510:64: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has type ‘std::__cxx11::basic_string<char>::size_type {aka long unsigned int}’ [-Wformat=]
-/tmp/ccQsohq0.o: In function `recordWpaConnected(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)':
-EasyConnect.cpp:(.text+0x20): undefined reference to `AcmeWpa::clockGetSeconds()'
-EasyConnect.cpp:(.text+0x5a): undefined reference to `log_msg'
-EasyConnect.cpp:(.text+0x8b): undefined reference to `log_msg'
-EasyConnect.cpp:(.text+0xb1): undefined reference to `log_msg'
-/tmp/ccQsohq0.o: In function `recordWpaAuthFailed(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)':
-EasyConnect.cpp:(.text+0x19c): undefined reference to `AcmeWpa::clockGetSeconds()'
-EasyConnect.cpp:(.text+0x1d6): undefined reference to `log_msg'
-EasyConnect.cpp:(.text+0x207): undefined reference to `log_msg'
-EasyConnect.cpp:(.text+0x22d): undefined reference to `log_msg'
-EasyConnect.cpp:(.text+0x643): undefined reference to `AcmeUpdateTZEnv(char const*, char const*)'
-EasyConnect.cpp:(.text+0x66a): undefined reference to `log_msg'
-EasyConnect.cpp:(.text+0x67e): undefined reference to `AcmeDatabase_SetUTCOffset(char const*)'
-EasyConnect.cpp:(.text+0x6a5): undefined reference to `log_msg'
-/tmp/ccQsohq0.o: In function `waitForIp(AcmeWpa&, double)':
-EasyConnect.cpp:(.text+0x6fc): undefined reference to `AcmeWpa::clockGetSeconds()'
-EasyConnect.cpp:(.text+0x72b): undefined reference to `AcmeWpa::restartDhcp(double, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*)'
-EasyConnect.cpp:(.text+0x748): undefined reference to `AcmeWpa::clockGetSeconds()'
-EasyConnect.cpp:(.text+0x870): undefined reference to `AcmeWpa::getWifiStatus(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*)'
+../HardConnect.cpp:510:64: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has type ‘std::__cxx11::basic_string<char>::size_type {aka long unsigned int}’ [-Wformat=]
+/tmp/xxxxxx.o: In function `recordWpaConnected(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)':
+HardConnect.cpp:(.text+0x20): undefined reference to `AcmeWpa::clockGetSeconds()'
+HardConnect.cpp:(.text+0x5a): undefined reference to `log_it'
+HardConnect.cpp:(.text+0x19c): undefined reference to `AcmeWpa::clockGetSeconds()'
+/tmp/xxxxxx.o: In function `applyTimeZoneUTCOffset(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)':
+HardConnect.cpp:(.text+0x643): undefined reference to `AcmeUpdateTZEnv(char const*, char const*)'
+HardConnect.cpp:(.text+0x6fc): undefined reference to `AcmeWpa::clock'
+HardConnect.cpp:(.text+0x72b): undefined reference to `AcmeWpa::restartDhcp(double, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*)'
+HardConnect.cpp:(.text+0xd44): undefined reference to `AcmeDatabase_SetCloudserver1Linked(bool)'
+HardConnect.cpp:(.text+0xd80): undefined reference to `log_it'
+HardConnect.cpp:(.text+0xd9a): undefined reference to `AcmeDatabase_GetCloudserver1Linked(bool*)'
+HardConnect.cpp:(.text+0xdd8): undefined reference to `log_it'
+HardConnect.cpp:(.text+0xe06): undefined reference to `AcmeRegistry::Write(char const*, char const*)'
+HardConnect.cpp:(.text+0xe06): undefined reference to `AcmeRegistry::instance'
+HardConnect.cpp:(.text+0xebb): undefined reference to `AcmeCrypto_RemoveKeyFile(char const*)'
+HardConnect.cpp:(.text+0x24e3): undefined reference to `pthread_setname_np'
+undefined reference to `myJSON_GetObjectItem'
+HardConnect.cpp:(.text._ZN32JsonHardConnectInitializeRequest15getNestedStringERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES7_PS5_[_ZN32JsonHardConnectInitializeRequest15getNestedStringERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES7_PS5_]+0x8c): undefined reference to `myJSON_IsString'
+/tmp/xxxxxx.o: In function `JsonCloudserver1LinkRequest::JsonCloudserver1LinkRequest()':
+HardConnect.cpp:(.text._ZN22JsonCloudserver1LinkRequestC2Ev[_ZN22JsonCloudserver1LinkRequestC5Ev]+0x18): undefined reference to `myJSON_CreateObject'
+/tmp/xxxxxx.o: In function `JsonCloudserver1LinkRequest::~JsonCloudserver1LinkRequest()':
+HardConnect.cpp:(.text._ZN22JsonCloudserver1LinkRequestD2Ev[_ZN22JsonCloudserver1LinkRequestD5Ev]+0x17): undefined reference to `myJSON_Delete'
+basic_stringIcSt11char_traitsIcESaIcEEES7_]+0x44): undefined reference to `myJSON_AddStringToObject'
+/tmp/xxxxxx.o: In function `AcmeRegistry::GetInstance()':
+HardConnect.cpp:(.text._ZN13AcmeRegistry11GetInstanceEv[_ZN13AcmeRegistry11GetInstanceEv]+0x32): undefined reference to `AcmeRegistry::AcmeRegistry()'
+HardConnect.cpp:(.text._ZN13AcmeRegistry11GetInstanceEv[_ZN13AcmeRegistry11GetInstanceEv]+0x4b): undefined reference to `AcmeRegistry::~AcmeRegistry()'
+collect2: error: ld returned 1 exit status
+make: allerrors.txt a.out build cpputest_build.sh cpputest_main.cpp cpputest_WebServer.cpp errors.txt fake_includes forced_include.h Makefile test_WebServer.cpp [build/test_WebServer] Error 1
+
