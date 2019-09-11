@@ -115,7 +115,7 @@ makeCppGlobalFakes()
 
 makeCFakes()
 {
-	grep -v "(.*).*(.*)" | grep -v "::" | sed -e's|.*undefined reference to `|EXPLODING_FAKE_FOR(|' -e"s|\'|)|"	
+	grep -v "(.*).*(.*)" | grep -v "::"  | sed -e's|.*undefined reference to `|EXPLODING_FAKE_FOR(|' -e"s|\'|)|"	
 }
 
 usage()
@@ -147,10 +147,17 @@ makeFakes()
 	cat $1 | removeNonLinkErrors | make$2Fakes | sort | uniq  >> $3
 }
 
+makeFakes2()
+{
+	cant_exist $4
+	preamble$3Fakes $4 $1
+	cat $2 | make$3Fakes2  >> $4
+}
+
 
 makeCFakes2()
 {
-	grep -v "::" | grep -v "(.*)" | sed -e's/^/EXPLODING_FAKE_FOR(/' -e's/$/)/'
+	grep -v "::" | grep -v "(.*)" | grep -v "typeinfo" | sed -e's/^/EXPLODING_FAKE_FOR(/' -e's/$/)/'
 }
 
 makeCppFakes2()
@@ -171,13 +178,24 @@ gen_xfakes()
 
 	input_file=$1
 	must_exist $input_file
+	undefines=$(mktemp)
+	sorted_undefines=$(mktemp)
+
+	isolateUndefinedSymbolsGcc <$input_file >$undefines
+	isolateUndefinedSymbolsClang <$input_file >>$undefines
+	sort $undefines | uniq >$sorted_undefines
+
+
 	fakes_c=$2-c.c	
 	fakes_cpp=$2-cpp.cpp	
 	fakes_cpp_globals=$2-cpp-globals.cpp
 	
-	makeFakes $input_file C         $fakes_c 
-	makeFakes $input_file Cpp       $fakes_cpp 
-	makeFakes $input_file CppGlobal $fakes_cpp_globals
+	makeFakes2 $input_file $sorted_undefines C         $fakes_c 
+	makeFakes2 $input_file $sorted_undefines Cpp       $fakes_cpp 
+	makeFakes2 $input_file $sorted_undefines CppGlobal $fakes_cpp_globals
+	rm $undefines
+	rm $sorted_undefines
+
 }
 
 if [[ "$(basename -- "$0")" == "gen-xfakes.sh" ]]; then

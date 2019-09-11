@@ -19,10 +19,12 @@ testFilterClangLinkerErrors()
 	cpp_function1='  "SomeClass::someFunction(Foo&)", referenced from:'
 	cpp_function2='  "someFunction(Foo*)", referenced from:'
 	cpp_global='  "SomeClass::someGlobal", referenced from:'
+	cpp_typeinfo="typeinfo for SomeClass'"
 	c_undefined='  "_someGlobal", referenced from:'
 	assertEquals 'SomeClass::someFunction(Foo&)' "$(echo $cpp_function1 | isolateUndefinedSymbolsClang)"
 	assertEquals 'someFunction(Foo*)' "$(echo $cpp_function2 | isolateUndefinedSymbolsClang)"
 	assertEquals 'SomeClass::someGlobal' "$(echo $cpp_global | isolateUndefinedSymbolsClang)"
+	assertEquals '' "$(echo $cpp_typeinfo | isolateUndefinedSymbolsClang)"
 	assertEquals 'someGlobal' "$(echo $c_undefined | isolateUndefinedSymbolsClang)"
 }
 
@@ -114,33 +116,27 @@ testCommandLine()
 
 diffWithGolden()
 {
-	assertEquals "$1 is different than golden copy" "" "$(diff test/$1 test/golden/$1)"
+	assertEquals "$2 is different than golden copy" "" "$(diff test/$2 test/golden/$1-$2)"
 }
 
-testOutputSameAsGolden()
+checkOutputSameAsGolden()
 {
-	gen_xfakes test/example-gcc-link-errors.txt test/myfakes
-	diffWithGolden myfakes-c.c
-	diffWithGolden myfakes-cpp.cpp
-	diffWithGolden myfakes-cpp-globals.cpp
+	gen_xfakes test/example-$1-link-errors.txt test/xfakes
+	diffWithGolden $1 xfakes-c.c
+	diffWithGolden $1 xfakes-cpp.cpp
+	diffWithGolden $1 xfakes-cpp-globals.cpp
+	rm test/xfakes*.*
 }
 
-cleanupOutput()
+testOutputSameAsGoldenGcc()
 {
-	rm -f test/myfakes-c.c
-	rm -f test/myfakes-cpp*.cpp
+	checkOutputSameAsGolden gcc
 }
 
-oneTimeSetUp()
+testOutputSameAsGoldenClang()
 {
-	cleanupOutput
+	checkOutputSameAsGolden clang
 }
-
-oneTimeTearDown()
-{
-	cleanupOutput
-}
-
 
 . $(dirname "$0")/gen-xfakes.sh 
 . ./shunit2/shunit2

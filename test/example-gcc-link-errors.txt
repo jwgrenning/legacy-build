@@ -21,7 +21,7 @@ HardConnect.cpp:(.text+0xe06): undefined reference to `AcmeRegistry::Write(char 
 HardConnect.cpp:(.text+0xe06): undefined reference to `AcmeRegistry::instance'
 HardConnect.cpp:(.text+0xebb): undefined reference to `AcmeCrypto_RemoveKeyFile(char const*)'
 HardConnect.cpp:(.text+0x24e3): undefined reference to `pthread_setname_np'
-undefined reference to `myJSON_GetObjectItem'
+HardConnect.cpp:(.text+0x24e3): undefined reference to `myJSON_GetObjectItem'
 HardConnect.cpp:(.text._ZN32JsonHardConnectInitializeRequest15getNestedStringERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES7_PS5_[_ZN32JsonHardConnectInitializeRequest15getNestedStringERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES7_PS5_]+0x8c): undefined reference to `myJSON_IsString'
 /tmp/xxxxxx.o: In function `JsonCloudserver1LinkRequest::JsonCloudserver1LinkRequest()':
 HardConnect.cpp:(.text._ZN22JsonCloudserver1LinkRequestC2Ev[_ZN22JsonCloudserver1LinkRequestC5Ev]+0x18): undefined reference to `myJSON_CreateObject'

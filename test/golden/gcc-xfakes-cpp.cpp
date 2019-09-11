@@ -1,5 +1,5 @@
 /*
-    File: myfakes-cpp.cpp From: example-gcc-link-errors.txt
+    File: xfakes-cpp.cpp From: example-gcc-link-errors.txt
 
  	Generated file to help to quickly stub C++ undefined external functions.
  	
