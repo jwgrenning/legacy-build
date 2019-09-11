@@ -120,24 +120,24 @@ cant_exist()
 	fi
 }
 
-makeFakes2()
+makeFakes()
 {
 	cant_exist $4
 	preamble$3Fakes $4 $1
-	cat $2 | make$3Fakes2  >> $4
+	cat $2 | make$3Fakes  >> $4
 }
 
-makeCFakes2()
+makeCFakes()
 {
 	grep -v "::" | grep -v "(.*)" | grep -v "typeinfo" | sed -e's/^/EXPLODING_FAKE_FOR(/' -e's/$/)/'
 }
 
-makeCppFakes2()
+makeCppFakes()
 {
 	grep "(.*)" | sed -e's|^|// void |' -e's/$/ { BOOM_VOID_CPP }/'
 }
 
-makeCppGlobalFakes2()
+makeCppGlobalFakes()
 {
 	grep -v "(.*)" | grep "::" | sed -e's|^|// cpp-global |' -e's/$/;/'
 }
@@ -162,9 +162,9 @@ gen_xfakes()
 	fakes_cpp=$2-cpp.cpp	
 	fakes_cpp_globals=$2-cpp-globals.cpp
 	
-	makeFakes2 $input_file $sorted_undefines C         $fakes_c 
-	makeFakes2 $input_file $sorted_undefines Cpp       $fakes_cpp 
-	makeFakes2 $input_file $sorted_undefines CppGlobal $fakes_cpp_globals
+	makeFakes $input_file $sorted_undefines C         $fakes_c
+	makeFakes $input_file $sorted_undefines Cpp       $fakes_cpp
+	makeFakes $input_file $sorted_undefines CppGlobal $fakes_cpp_globals
 	rm $undefines
 	rm $sorted_undefines
 

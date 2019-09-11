@@ -32,10 +32,10 @@ testMakeCFake()
 	cpp_function2="someFunction(Foo*)"
 	cpp_global="SomeClass::someGlobal"
 	c_undefined="someGlobal"
-	assertEquals '' "$(echo $cpp_function1 | makeCFakes2)"
-	assertEquals '' "$(echo $cpp_function2 | makeCFakes2)"
-	assertEquals '' "$(echo $cpp_global | makeCFakes2)"
-	assertEquals 'EXPLODING_FAKE_FOR(someGlobal)' "$(echo $c_undefined | makeCFakes2)"
+	assertEquals '' "$(echo $cpp_function1 | makeCFakes)"
+	assertEquals '' "$(echo $cpp_function2 | makeCFakes)"
+	assertEquals '' "$(echo $cpp_global | makeCFakes)"
+	assertEquals 'EXPLODING_FAKE_FOR(someGlobal)' "$(echo $c_undefined | makeCFakes)"
 }
 
 testMakeCppFake()
@@ -44,10 +44,10 @@ testMakeCppFake()
 	cpp_function2="someFunction(Foo*)"
 	cpp_global="SomeClass::someGlobal"
 	c_undefined="someGlobal"
-	assertEquals '// void SomeClass::someFunction(Foo&) { BOOM_VOID_CPP }' "$(echo $cpp_function1 | makeCppFakes2)"
-	assertEquals '// void someFunction(Foo*) { BOOM_VOID_CPP }' "$(echo $cpp_function2 | makeCppFakes2)"
-	assertEquals '' "$(echo $cpp_global | makeCppFakes2)"
-	assertEquals '' "$(echo $c_undefined | makeCppFakes2)"
+	assertEquals '// void SomeClass::someFunction(Foo&) { BOOM_VOID_CPP }' "$(echo $cpp_function1 | makeCppFakes)"
+	assertEquals '// void someFunction(Foo*) { BOOM_VOID_CPP }' "$(echo $cpp_function2 | makeCppFakes)"
+	assertEquals '' "$(echo $cpp_global | makeCppFakes)"
+	assertEquals '' "$(echo $c_undefined | makeCppFakes)"
 }
 
 testMakeCppGlobalFake()
@@ -56,10 +56,10 @@ testMakeCppGlobalFake()
 	cpp_function2="someFunction(Foo*)"
 	cpp_global="SomeClass::someGlobal"
 	c_undefined="someGlobal"
-	assertEquals '' "$(echo $cpp_function1 | makeCppGlobalFakes2)"
-	assertEquals '' "$(echo $cpp_function2 | makeCppGlobalFakes2)"
-	assertEquals '// cpp-global SomeClass::someGlobal;' "$(echo $cpp_global | makeCppGlobalFakes2)"
-	assertEquals '' "$(echo $c_undefined | makeCppGlobalFakes2)"
+	assertEquals '' "$(echo $cpp_function1 | makeCppGlobalFakes)"
+	assertEquals '' "$(echo $cpp_function2 | makeCppGlobalFakes)"
+	assertEquals '// cpp-global SomeClass::someGlobal;' "$(echo $cpp_global | makeCppGlobalFakes)"
+	assertEquals '' "$(echo $c_undefined | makeCppGlobalFakes)"
 }
 
 
