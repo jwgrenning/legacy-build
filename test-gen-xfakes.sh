@@ -1,19 +1,5 @@
 #! /bin/sh
 
-testFilterGccNoLinkErrors()
-{
-	assertEquals "Empty linker output" '' "$(echo '' | removeNonLinkErrors)"
-	assertEquals "No undefined message" '' "$(echo 'some other error text' | removeNonLinkErrors)"
-}
-
-testFilterGccStandAloneCppFunction()
-{
-	line="xxx:(xxx): undefined reference to \`AcmeWpa::restartDhcp(foo, bar*)'"
-	assertEquals '// void AcmeWpa::restartDhcp(foo, bar*) { BOOM_VOID_CPP }' "$(echo $line | makeCppFakes)"
-	assertEquals '' "$(echo $line | makeCFakes)"
-	assertEquals '' "$(echo $line | makeCppGlobalFakes)"
-}
-
 testFilterClangLinkerErrors()
 {
 	cpp_function1='  "SomeClass::someFunction(Foo&)", referenced from:'
@@ -77,41 +63,11 @@ testMakeCppGlobalFake()
 }
 
 
-testFilterGccCppGlobal()
-{
-	line="xxx:(xxx): undefined reference to \`foo::foo'"
-	assertEquals '//cpp-global foo::foo;' "$(echo $line | makeCppGlobalFakes)"
-	assertEquals '' "$(echo $line | makeCFakes)"
-	assertEquals '' "$(echo $line | makeCppFakes)"
-}
-
-testFilterGccScopedCppFunction()
-{
-	line="blah:(blah): undefined reference to \`foo::foo(bar)'"
-	assertEquals '// void foo::foo(bar) { BOOM_VOID_CPP }' "$(echo $line | makeCppFakes)"
-	assertEquals '' "$(echo $line | makeCFakes)"
-	assertEquals '' "$(echo $line | makeCppGlobalFakes)"
-}
-
-testFilterGccCFunction()
-{
-	line="blah:(blah): undefined reference to \`foo'"
-	assertEquals 'EXPLODING_FAKE_FOR(foo)' "$(echo $line | makeCFakes)"
-	assertEquals '' "$(echo $line | makeCppFakes)"
-	assertEquals '' "$(echo $line | makeCppGlobalFakes)"
-}
-
-testFilterGccCGlobalVariable()
-{
-	line="blah:(blah): undefined reference to \`global_var_foo'"
-	assertEquals 'EXPLODING_FAKE_FOR(global_var_foo)' "$(echo $line | makeCFakes)"
-}
-
 testCommandLine()
 {
 	assertContains "$(gen_xfakes)" "usage"
-	# assertContains "$(gen_xfakes input_file.txt)" "usage"
-	# assertContains "$(gen_xfakes input_file.txt output_base_name)" ""
+	assertContains "$(gen_xfakes input_file.txt)" "usage"
+	assertContains "$(gen_xfakes input_file.txt output_base_name)" ""
 }
 
 diffWithGolden()

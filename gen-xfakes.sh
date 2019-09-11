@@ -98,26 +98,6 @@ isolateUndefinedSymbolsGcc()
 	grep ": undefined reference to " | sed -e's/^.*\`//' -e"s/'$//"
 }
 
-removeNonLinkErrors()
-{
-	grep "undefined reference to"
-}
-
-makeCppFakes()
-{
-	grep "(.*).*(.*)" | sed -e's|.*undefined reference to `|// void |' -e"s|\'| { BOOM_VOID_CPP }|"
-}
-
-makeCppGlobalFakes()
-{
-	grep "::" | grep -v "(.*).*(.*)" | sed -e's|.*undefined reference to `|//cpp-global |' -e"s|\'.*|;|"	
-}
-
-makeCFakes()
-{
-	grep -v "(.*).*(.*)" | grep -v "::"  | sed -e's|.*undefined reference to `|EXPLODING_FAKE_FOR(|' -e"s|\'|)|"	
-}
-
 usage()
 {
 	echo "usage $0 linker-error-output.txt out-file-basename"
@@ -140,20 +120,12 @@ cant_exist()
 	fi
 }
 
-makeFakes()
-{
-	cant_exist $3
-	preamble$2Fakes $3 $1
-	cat $1 | removeNonLinkErrors | make$2Fakes | sort | uniq  >> $3
-}
-
 makeFakes2()
 {
 	cant_exist $4
 	preamble$3Fakes $4 $1
 	cat $2 | make$3Fakes2  >> $4
 }
-
 
 makeCFakes2()
 {
