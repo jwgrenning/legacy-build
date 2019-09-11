@@ -1,0 +1,60 @@
+Making clean
+compiling LightSchedulerTest.cpp
+compiling AllTests.cpp
+compiling LightScheduler.cpp
+Building archive lib/libHomeAutomation.a
+a - objs/src/LightScheduler.o
+Linking HomeAutomation_tests
+Undefined symbols for architecture x86_64:
+  "LightSwitch::On(int)", referenced from:
+      LightScheduler::TimeToCheckTheSchedule() in libHomeAutomation.a(LightScheduler.o)
+  "LightSwitch::Off(int)", referenced from:
+      LightScheduler::TimeToCheckTheSchedule() in libHomeAutomation.a(LightScheduler.o)
+  "LightSwitch::LightSwitch()", referenced from:
+      LightScheduler::LightScheduler() in libHomeAutomation.a(LightScheduler.o)
+  "LightSwitch::~LightSwitch()", referenced from:
+      LightScheduler::LightScheduler() in libHomeAutomation.a(LightScheduler.o)
+      LightScheduler::~LightScheduler() in libHomeAutomation.a(LightScheduler.o)
+  "TimeService::wakePeriodically(std::__1::unique_ptr<WakeUpAction, std::__1::default_delete<WakeUpAction> >)", referenced from:
+      LightScheduler::LightScheduler() in libHomeAutomation.a(LightScheduler.o)
+  "TimeService::getTime()", referenced from:
+      LightScheduler::TimeToCheckTheSchedule() in libHomeAutomation.a(LightScheduler.o)
+  "TimeService::TimeService()", referenced from:
+      LightScheduler::LightScheduler() in libHomeAutomation.a(LightScheduler.o)
+  "TimeService::~TimeService()", referenced from:
+      LightScheduler::LightScheduler() in libHomeAutomation.a(LightScheduler.o)
+      LightScheduler::~LightScheduler() in libHomeAutomation.a(LightScheduler.o)
+  "WakeUpAction::WakeUpAction(int)", referenced from:
+      LightSchedulerWakeUpAction::LightSchedulerWakeUpAction(LightScheduler*) in libHomeAutomation.a(LightScheduler.o)
+  "WakeUpAction::~WakeUpAction()", referenced from:
+      LightSchedulerWakeUpAction::~LightSchedulerWakeUpAction() in libHomeAutomation.a(LightScheduler.o)
+  "RandomMinuteGenerator::Get()", referenced from:
+      LightScheduler::TimeToCheckTheSchedule() in libHomeAutomation.a(LightScheduler.o)
+  "RandomMinuteGenerator::RandomMinuteGenerator(int, int)", referenced from:
+      LightScheduler::LightScheduler() in libHomeAutomation.a(LightScheduler.o)
+  "RandomMinuteGenerator::~RandomMinuteGenerator()", referenced from:
+      LightScheduler::LightScheduler() in libHomeAutomation.a(LightScheduler.o)
+      LightScheduler::~LightScheduler() in libHomeAutomation.a(LightScheduler.o)
+  "Time::Time(Time const&)", referenced from:
+      LightSchedulerWakeUpAction::wakeUp(Time) in libHomeAutomation.a(LightScheduler.o)
+  "Time::~Time()", referenced from:
+      LightScheduler::TimeToCheckTheSchedule() in libHomeAutomation.a(LightScheduler.o)
+      LightSchedulerWakeUpAction::wakeUp(Time) in libHomeAutomation.a(LightScheduler.o)
+  "Time::getDay() const", referenced from:
+      LightScheduler::TimeToCheckTheSchedule() in libHomeAutomation.a(LightScheduler.o)
+  "Time::getMinute() const", referenced from:
+      LightScheduler::TimeToCheckTheSchedule() in libHomeAutomation.a(LightScheduler.o)
+  "typeinfo for WakeUpAction", referenced from:
+      typeinfo for LightSchedulerWakeUpAction in libHomeAutomation.a(LightScheduler.o)
+  "_eventList", referenced from:
+      LightScheduler::LightScheduler() in libHomeAutomation.a(LightScheduler.o)
+      LightScheduler::TimeToCheckTheSchedule() in libHomeAutomation.a(LightScheduler.o)
+      LightScheduler::AddTurnOn(int, Time::Day, int) in libHomeAutomation.a(LightScheduler.o)
+      LightScheduler::RandomizeTurnOn(int, Time::Day, int) in libHomeAutomation.a(LightScheduler.o)
+      LightScheduler::AddTurnOff(int, Time::Day, int) in libHomeAutomation.a(LightScheduler.o)
+      LightScheduler::Remove(int, Time::Day, int) in libHomeAutomation.a(LightScheduler.o)
+  "_log_debug", referenced from:
+      LightScheduler::LightScheduler() in libHomeAutomation.a(LightScheduler.o)
+      LightScheduler::~LightScheduler() in libHomeAutomation.a(LightScheduler.o)
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)

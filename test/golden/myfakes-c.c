@@ -9,7 +9,7 @@
     * Do not include the header files for the referenced functions. The C-linker does not care.
 
  	Note: a EXPLODING_FAKE_FOR() is generated for global variables too.
-    * They will explode upong write :-)
+    * They will explode upon write :-)
     * You might want to resolve these a different way.
 
 */

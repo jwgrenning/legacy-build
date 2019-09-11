@@ -12,7 +12,7 @@ preambleCFakes()
     * Do not include the header files for the referenced functions. The C-linker does not care.
 
  	Note: a EXPLODING_FAKE_FOR() is generated for global variables too.
-    * They will explode upong write :-)
+    * They will explode upon write :-)
     * You might want to resolve these a different way.
 
 */
@@ -88,6 +88,16 @@ preambleCppGlobalFakes()
 EOM
 }
 
+isolateUndefinedSymbolsClang()
+{
+	grep ", referenced from:" | sed -e's/^ *"//' -e's/".*//' -e's/^_//'
+}
+
+isolateUndefinedSymbolsGcc()
+{
+	grep ": undefined reference to " | sed -e's/^.*\`//' -e"s/'$//"
+}
+
 removeNonLinkErrors()
 {
 	grep "undefined reference to"
@@ -137,6 +147,22 @@ makeFakes()
 	cat $1 | removeNonLinkErrors | make$2Fakes | sort | uniq  >> $3
 }
 
+
+makeCFakes2()
+{
+	grep -v "::" | grep -v "(.*)" | sed -e's/^/EXPLODING_FAKE_FOR(/' -e's/$/)/'
+}
+
+makeCppFakes2()
+{
+	grep "(.*)" | sed -e's|^|// void |' -e's/$/ { BOOM_VOID_CPP }/'
+}
+
+makeCppGlobalFakes2()
+{
+	grep -v "(.*)" | grep "::" | sed -e's|^|// cpp-global |' -e's/$/;/'
+}
+
 gen_xfakes()
 {
 	if [ $# -ne 2 ]; then
@@ -145,14 +171,13 @@ gen_xfakes()
 
 	input_file=$1
 	must_exist $input_file
-
 	fakes_c=$2-c.c	
 	fakes_cpp=$2-cpp.cpp	
 	fakes_cpp_globals=$2-cpp-globals.cpp
 	
 	makeFakes $input_file C         $fakes_c 
 	makeFakes $input_file Cpp       $fakes_cpp 
-	makeFakes $input_file CppGlobal $fakes_cpp_globals  
+	makeFakes $input_file CppGlobal $fakes_cpp_globals
 }
 
 if [[ "$(basename -- "$0")" == "gen-xfakes.sh" ]]; then
