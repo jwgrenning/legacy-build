@@ -15,3 +15,29 @@
 1>states.obj : error LNK2019: unresolved external symbol _Add_double referenced in function _State_Update
 1>states.obj : error LNK2019: unresolved external symbol _Get_Digit_UINT32 referenced in function _State_Update_BatchDispense
 1>states.obj : error LNK2019: unresolved external symbol _Set_Digit_UINT16 referenced in function _State_Update_BatchDispense
+
+Error	1	error LNK2019: unresolved external symbol "__declspec(dllimport) public: static double __cdecl vtkLine::DistanceToLine(double * const,double * const,double * const,double &,double * const)" (__imp_?DistanceToLine@vtkLine@@SANQAN00AAN0@Z) referenced in function _main	E:\DistancePointToLine\DistancePointToLine.obj	DistancePointToLine
+
+Error	2	error LNK2019: unresolved external symbol "__declspec(dllimport) public: static double __cdecl vtkLine::DistanceToLine(double * const,double * const,double * const)" (__imp_?DistanceToLine@vtkLine@@SANQAN00@Z) referenced in function _main	E:\DistancePointToLine\DistancePointToLine.obj	DistancePointToLine
+
+ : error LNK2019: unresolved external symbol "__declspec(dllimport) public: virtual signed char __cdecl icu_62::UCharCharacterIterator::hasNext(void)" (__imp_?hasNext@UCharCharacterIterator@icu_62@@UEAACXZ) referenced in function "void __cdecl tensorflow::anonymous namespace'::Encode(enum tensorflow::UnicodeEncoding,class icu_62::UnicodeString const &,class std::basic_string<char,struct std::char_traits,class std::allocator > *)" (?Encode@?A0xb9816742@tensorflow@@YAXW4UnicodeEncoding@2@AEBVUnicodeString@icu_62@@peav?$basic_string@DU?$char_traits@D@std@@v?$allocator@D@2@@std@@@z)
+unicode_ops.lo.lib(unicode_ops.obj)
+
+ : error LNK2019: unresolved external symbol "__declspec(dllimport) public: signed char __cdecl icu_62::ErrorCode::isSuccess(void)const " (_imp?isSuccess@ErrorCode@icu_62@@QEBACXZ) referenced in function "public: virtual void __cdecl tensorflow::UnicodeScriptOp::Compute(class tensorflow::OpKernelContext *)" (?Compute@UnicodeScriptOp@tensorflow@@UEAAXPEAVOpKernelContext@2@@z)
+
+unicode_script_op.lo.lib(unicode_script_op.obj) : error LNK2019: unresolved external symbol "__declspec(dllimport) public: enum UErrorCode __cdecl icu_62::ErrorCode::reset(void)" (_imp?reset@ErrorCode@icu_62@@QEAA?AW4UErrorCode@@xz) referenced in function "public: virtual void __cdecl tensorflow::UnicodeScriptOp::Compute(class tensorflow::OpKernelContext *)" (?Compute@UnicodeScriptOp@tensorflow@@UEAAXPEAVOpKernelContext@2@@z)
+
+unicode_script_op.lo.lib(unicode_script_op.obj) : error LNK2019: unresolved external symbol "__declspec(dllimport) const icu_62::ErrorCode::`vftable'" (_imp??_7ErrorCode@icu_62@@6b@) referenced in function "public: virtual void __cdecl tensorflow::UnicodeScriptOp::Compute(class tensorflow::OpKernelContext *)" (?Compute@UnicodeScriptOp@tensorflow@@UEAAXPEAVOpKernelContext@2@@z)icuuc.lib(udata.obj)
+
+ : error LNK2019: unresolved external symbol __imp_icudt62_dat referenced in function "struct UDataMemory * __cdecl openCommonData(char const *,int,enum UErrorCode *)" (?openCommonData@@YAPEAUUDataMemory@@PEBDHPEAW4UErrorCode@@@z)
+
+bazel-out/x64_windows-opt/bin/tensorflow/cc/example/example.exe : fatal error LNK1120: 9 unresolved externals
+Target //tensorflow/cc/example:example failed to build
+INFO: Elapsed time: 19976.467s, Critical Path: 13898.60s
+INFO: 1461 processes: 1461 local.
+FAILED: Build did NOT complete successfully
+FAILED: Build did NOT complete successfully
+**
+
+
+

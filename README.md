@@ -24,12 +24,12 @@ $ path/to/gen-xfakes.sh error-output.txt xfakes
  ## Supported formats
 
  * g++ linker output
+ * clang
+ * Visual Studio -- best guess
 
  ## To be supported formats
 
- * clang
- * Visual Studio
-
+ 
 
  ## Examples
 

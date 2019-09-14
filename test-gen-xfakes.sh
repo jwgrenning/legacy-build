@@ -26,6 +26,18 @@ testFilterGccLinkerErrors()
 	assertEquals 'someGlobal' "$(echo $c_undefined | isolateUndefinedSymbolsGcc)"
 }
 
+testFilterVisualStudioLinkerErrors()
+{
+	cpp_function1="blah: LNK2019 blah symbol \"SomeClass::someFunction(Foo&)\" blah blah"
+	cpp_function2="blah: LNK2019 blah symbol \"someFunction(Foo*)\" blah blah"
+	cpp_global="blah: LNK2019 blah symbol \"SomeClass::someGlobal\" blah blah"
+	c_undefined="blah: LNK2019 blah symbol _someGlobal blah blah"
+	assertEquals 'SomeClass::someFunction(Foo&)' "$(echo $cpp_function1 | isolateUndefinedSymbolsVS)"
+	assertEquals 'someFunction(Foo*)' "$(echo $cpp_function2 | isolateUndefinedSymbolsVS)"
+	assertEquals 'SomeClass::someGlobal' "$(echo $cpp_global | isolateUndefinedSymbolsVS)"
+	assertEquals 'someGlobal' "$(echo $c_undefined | isolateUndefinedSymbolsVS)"
+}
+
 testMakeCFake()
 {
 	cpp_function1="SomeClass::someFunction(Foo&)"

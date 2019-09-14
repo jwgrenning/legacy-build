@@ -98,6 +98,11 @@ isolateUndefinedSymbolsGcc()
 	grep ": undefined reference to " | sed -e's/^.*\`//' -e"s/'$//"
 }
 
+isolateUndefinedSymbolsVS()
+{
+	grep "LNK2019" | sed -e's/^.*symbol //' | sed -e's/^[_"]//' | sed -e's/"* .*//'
+}
+
 usage()
 {
 	echo "usage $0 linker-error-output.txt out-file-basename"
