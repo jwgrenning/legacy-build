@@ -1,6 +1,6 @@
 #! /bin/sh
 
-testFilterClangLinkerErrors()
+testFilterLinkerErrorsClang()
 {
 	cpp_function1='  "SomeClass::someFunction(Foo&)", referenced from:'
 	cpp_function2='  "someFunction(Foo*)", referenced from:'
@@ -14,7 +14,7 @@ testFilterClangLinkerErrors()
 	assertEquals 'someGlobal' "$(echo $c_undefined | isolateUndefinedSymbolsClang)"
 }
 
-testFilterGccLinkerErrors()
+testFilterLinkerErrorsGcc()
 {
 	cpp_function1="blah: undefined reference to \`SomeClass::someFunction(Foo&)'"
 	cpp_function2="blah: undefined reference to \`someFunction(Foo*)'"
@@ -26,28 +26,54 @@ testFilterGccLinkerErrors()
 	assertEquals 'someGlobal' "$(echo $c_undefined | isolateUndefinedSymbolsGcc)"
 }
 
-testFilterVisualStudioLinkerErrors()
+testFilterLinkerErrorsVS_Cpp()
 {
 	cpp_function1="blah: LNK2019 blah symbol \"SomeClass::someFunction(Foo&)\" blah blah"
-	cpp_function2="blah: LNK2019 blah symbol \"someFunction(Foo*)\" blah blah"
+	cpp_function2="blah: LNK2019 blah symbol \"__declspec(dllimport) someFunction(Foo*)\" blah blah"
 	cpp_global="blah: LNK2019 blah symbol \"SomeClass::someGlobal\" blah blah"
-	c_undefined="blah: LNK2019 blah symbol _someGlobal blah blah"
-	assertEquals 'SomeClass::someFunction(Foo&)' "$(echo $cpp_function1 | isolateUndefinedSymbolsVS)"
-	assertEquals 'someFunction(Foo*)' "$(echo $cpp_function2 | isolateUndefinedSymbolsVS)"
-	assertEquals 'SomeClass::someGlobal' "$(echo $cpp_global | isolateUndefinedSymbolsVS)"
-	assertEquals 'someGlobal' "$(echo $c_undefined | isolateUndefinedSymbolsVS)"
+	cpp_wierd_global="error LNK2001: unresolved external symbol \"public: static class beta alpha::var\" (?var@alpha@@2Vbeta@@A)"
+	assertEquals 'SomeClass::someFunction(Foo&)' "$(echo $cpp_function1 | isolateUndefinedSymbolsVS_Cpp)"
+	assertEquals '__declspec(dllimport) someFunction(Foo*)' "$(echo $cpp_function2 | isolateUndefinedSymbolsVS_Cpp)"
+	assertEquals 'SomeClass::someGlobal' "$(echo $cpp_global | isolateUndefinedSymbolsVS_Cpp)"
+	assertEquals 'public: static class beta alpha::var' "$(echo $cpp_wierd_global | isolateUndefinedSymbolsVS_Cpp)"
+}
+
+testFilterLinkerErrorsVS_Cpp_IgnoresC()
+{
+	c_undefined="blah: LNK2019 blah symbol _someGlobal referenced blah"
+	assertEquals '' "$(echo $c_undefined | isolateUndefinedSymbolsVS_Cpp)"
+}
+
+testFilterLinkerErrorsVS_C()
+{
+	c_undefined="blah: LNK2019 blah symbol _someGlobal referenced blah"
+	assertEquals 'someGlobal' "$(echo $c_undefined | isolateUndefinedSymbolsVS_C)"	
+}
+
+testFilterLinkerErrorsVS_C_IgnoresCpp()
+{
+	cpp_function1="blah: LNK2019 blah symbol \"SomeClass::someFunction(Foo&)\" blah blah"
+	cpp_function2="blah: LNK2019 blah symbol \"__declspec(dllimport) someFunction(Foo*)\" blah blah"
+	cpp_global="blah: LNK2019 blah symbol \"SomeClass::someGlobal\" blah blah"
+	assertEquals '' "$(echo $cpp_function1 | isolateUndefinedSymbolsVS_C)"
+	assertEquals '' "$(echo $cpp_function2 | isolateUndefinedSymbolsVS_C)"
+	assertEquals '' "$(echo $cpp_global | isolateUndefinedSymbolsVS_C)"
 }
 
 testMakeCFake()
 {
+	c_undefined="someGlobal"
+	assertEquals 'EXPLODING_FAKE_FOR(someGlobal)' "$(echo $c_undefined | makeCFakes)"
+}
+
+testMakeCFakeIgnoresCpp()
+{
 	cpp_function1="SomeClass::someFunction(Foo&)"
 	cpp_function2="someFunction(Foo*)"
 	cpp_global="SomeClass::someGlobal"
-	c_undefined="someGlobal"
 	assertEquals '' "$(echo $cpp_function1 | makeCFakes)"
 	assertEquals '' "$(echo $cpp_function2 | makeCFakes)"
 	assertEquals '' "$(echo $cpp_global | makeCFakes)"
-	assertEquals 'EXPLODING_FAKE_FOR(someGlobal)' "$(echo $c_undefined | makeCFakes)"
 }
 
 testMakeCppFake()
@@ -84,16 +110,21 @@ testCommandLine()
 
 diffWithGolden()
 {
-	assertEquals "$2 is different than golden copy" "" "$(diff test/$2 test/golden/$1-$2)"
+	assertEquals "$2 is different than golden copy" "" "$(diff test/$2 test/golden/$2)"
+}
+
+cleanup()
+{
+	rm -f test/$1-xfakes*.*	
 }
 
 checkOutputSameAsGolden()
 {
-	gen_xfakes test/example-$1-link-errors.txt test/xfakes
-	diffWithGolden $1 xfakes-c.c
-	diffWithGolden $1 xfakes-cpp.cpp
-	diffWithGolden $1 xfakes-cpp-globals.cpp
-	rm test/xfakes*.*
+	gen_xfakes test/example-$1-link-errors.txt test/$1-xfakes
+	diffWithGolden $1 $1-xfakes-c.c
+	diffWithGolden $1 $1-xfakes-cpp.cpp
+	diffWithGolden $1 $1-xfakes-cpp-globals.cpp
+	cleanup $1
 }
 
 testOutputSameAsGoldenGcc()
@@ -104,6 +135,11 @@ testOutputSameAsGoldenGcc()
 testOutputSameAsGoldenClang()
 {
 	checkOutputSameAsGolden clang
+}
+
+testOutputSameAsGoldenVS()
+{
+	checkOutputSameAsGolden vs
 }
 
 . $(dirname "$0")/gen-xfakes.sh 

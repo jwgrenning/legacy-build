@@ -1,5 +1,5 @@
 /*
-    File: gcc-xfakes-cpp-globals.cpp From: example-gcc-link-errors.txt
+    File: vs-xfakes-cpp-globals.cpp From: example-vs-link-errors.txt
 
  	Generated file to help to quickly stub C++ undefined external globals.
  	
@@ -14,5 +14,4 @@
 
 */
 
-// cpp-global AcmeRegistry::instance;
-// cpp-global AcmeWpa::clock;
+// cpp-global public: static class beta alpha::var;

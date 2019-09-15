@@ -1,5 +1,5 @@
 /*
-    File: clang-xfakes-c.c From: example-clang-link-errors.txt
+    File: vs-xfakes-c.c From: example-vs-link-errors.txt
 
  	Generated file to help to quickly stub C-linkage unresolved external references
 
@@ -23,5 +23,8 @@
 #define NULL_VALUE_FAKE_FOR(value_type, f, result) value_type f(void); value_type f(void) { return result; }
 
 
-EXPLODING_FAKE_FOR(eventList)
-EXPLODING_FAKE_FOR(log_debug)
+EXPLODING_FAKE_FOR(Add_double)
+EXPLODING_FAKE_FOR(Get_Digit_UINT32)
+EXPLODING_FAKE_FOR(Set_Digit_UINT16)
+EXPLODING_FAKE_FOR(_imp_icudt62_dat)
+EXPLODING_FAKE_FOR(errorHalt)

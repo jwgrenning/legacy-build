@@ -31,6 +31,8 @@ unicode_script_op.lo.lib(unicode_script_op.obj) : error LNK2019: unresolved exte
 
  : error LNK2019: unresolved external symbol __imp_icudt62_dat referenced in function "struct UDataMemory * __cdecl openCommonData(char const *,int,enum UErrorCode *)" (?openCommonData@@YAPEAUUDataMemory@@PEBDHPEAW4UErrorCode@@@z)
 
+error LNK2001: unresolved external symbol "public: static class beta alpha::var" (?var@alpha@@2Vbeta@@A)
+
 bazel-out/x64_windows-opt/bin/tensorflow/cc/example/example.exe : fatal error LNK1120: 9 unresolved externals
 Target //tensorflow/cc/example:example failed to build
 INFO: Elapsed time: 19976.467s, Critical Path: 13898.60s

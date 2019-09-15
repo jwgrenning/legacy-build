@@ -88,19 +88,44 @@ preambleCppGlobalFakes()
 EOM
 }
 
+linkErrorClang()
+{
+	grep ", referenced from:"
+}
+
 isolateUndefinedSymbolsClang()
 {
-	grep ", referenced from:" | sed -e's/^ *"//' -e's/".*//' -e's/^_//'
+	linkErrorClang | sed -e's/^ *"//' -e's/".*//' -e's/^_//'
+}
+
+linkErrorGcc()
+{
+	grep ": undefined reference to "
 }
 
 isolateUndefinedSymbolsGcc()
 {
-	grep ": undefined reference to " | sed -e's/^.*\`//' -e"s/'$//"
+	linkErrorGcc | sed -e's/^.*\`//' -e"s/'$//"
 }
 
-isolateUndefinedSymbolsVS()
+linkErrorVS_C()
 {
-	grep "LNK2019" | sed -e's/^.*symbol //' | sed -e's/^[_"]//' | sed -e's/"* .*//'
+	grep "LNK2019.*symbol _"
+}
+
+linkErrorVS_Cpp()
+{
+	grep "LNK2019\|LNK2001" | grep ".*symbol \""
+}
+
+isolateUndefinedSymbolsVS_C()
+{
+	linkErrorVS_C | sed -e's/^.*symbol _/__C__/'   -e's/ referenced.*//' -e's/__C__//'
+}
+
+isolateUndefinedSymbolsVS_Cpp()
+{
+	linkErrorVS_Cpp | sed -e's/^.*symbol "/__CPP__/'  -e's/" .*//' -e's/__CPP__//'
 }
 
 usage()
@@ -144,7 +169,7 @@ makeCppFakes()
 
 makeCppGlobalFakes()
 {
-	grep -v "(.*)" | grep "::" | sed -e's|^|// cpp-global |' -e's/$/;/'
+	grep -v "(.*)" | grep "::" | sed -e's|^|// cpp-global |' -e's/$/;&/'
 }
 
 gen_xfakes()
@@ -160,6 +185,8 @@ gen_xfakes()
 
 	isolateUndefinedSymbolsGcc <$input_file >$undefines
 	isolateUndefinedSymbolsClang <$input_file >>$undefines
+	isolateUndefinedSymbolsVS_C <$input_file >>$undefines
+	isolateUndefinedSymbolsVS_Cpp <$input_file >>$undefines
 	sort $undefines | uniq >$sorted_undefines
 
 

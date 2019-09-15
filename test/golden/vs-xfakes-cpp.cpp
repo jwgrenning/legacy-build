@@ -1,5 +1,5 @@
 /*
-    File: gcc-xfakes-cpp.cpp From: example-gcc-link-errors.txt
+    File: vs-xfakes-cpp.cpp From: example-vs-link-errors.txt
 
  	Generated file to help to quickly stub C++ undefined external functions.
  	
@@ -29,12 +29,9 @@
 
 // #include "your.h"
 
-// void AcmeCrypto_RemoveKeyFile(char const*) { BOOM_VOID_CPP }
-// void AcmeDatabase_GetCloudserver1Linked(bool*) { BOOM_VOID_CPP }
-// void AcmeDatabase_SetCloudserver1Linked(bool) { BOOM_VOID_CPP }
-// void AcmeRegistry::AcmeRegistry() { BOOM_VOID_CPP }
-// void AcmeRegistry::Write(char const*, char const*) { BOOM_VOID_CPP }
-// void AcmeRegistry::~AcmeRegistry() { BOOM_VOID_CPP }
-// void AcmeUpdateTZEnv(char const*, char const*) { BOOM_VOID_CPP }
-// void AcmeWpa::clockGetSeconds() { BOOM_VOID_CPP }
-// void AcmeWpa::restartDhcp(double, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*) { BOOM_VOID_CPP }
+// void __declspec(dllimport) const icu_62::ErrorCode::`vftable' { BOOM_VOID_CPP }
+// void __declspec(dllimport) public: enum UErrorCode __cdecl icu_62::ErrorCode::reset(void) { BOOM_VOID_CPP }
+// void __declspec(dllimport) public: signed char __cdecl icu_62::ErrorCode::isSuccess(void)const  { BOOM_VOID_CPP }
+// void __declspec(dllimport) public: static double __cdecl vtkLine::DistanceToLine(double * const,double * const,double * const) { BOOM_VOID_CPP }
+// void __declspec(dllimport) public: static double __cdecl vtkLine::DistanceToLine(double * const,double * const,double * const,double &,double * const) { BOOM_VOID_CPP }
+// void __declspec(dllimport) public: virtual signed char __cdecl icu_62::UCharCharacterIterator::hasNext(void) { BOOM_VOID_CPP }

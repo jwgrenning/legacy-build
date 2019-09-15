@@ -1,5 +1,5 @@
 /*
-    File: xfakes-cpp.cpp From: example-clang-link-errors.txt
+    File: clang-xfakes-cpp.cpp From: example-clang-link-errors.txt
 
  	Generated file to help to quickly stub C++ undefined external functions.
  	
