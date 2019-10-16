@@ -1,5 +1,7 @@
 #! /bin/sh
 
+TEST_DIR=.
+
 testFilterLinkerErrorsClang()
 {
 	cpp_function1='  "SomeClass::someFunction(Foo&)", referenced from:'
@@ -110,17 +112,17 @@ testCommandLine()
 
 diffWithGolden()
 {
-	assertEquals "$2 is different than golden copy" "" "$(diff test/$2 test/golden/$2)"
+	assertEquals "$2 is different than golden copy" "" "$(diff $TEST_DIR/$2 $TEST_DIR/golden/$2)"
 }
 
 cleanup()
 {
-	rm -f test/$1-xfakes*.*	
+	rm -f $TEST_DIR/$1-xfakes*.*	
 }
 
 checkOutputSameAsGolden()
 {
-	gen_xfakes test/example-$1-link-errors.txt test/$1-xfakes
+	gen_xfakes $TEST_DIR/example-$1-link-errors.txt $TEST_DIR/$1-xfakes
 	diffWithGolden $1 $1-xfakes-c.c
 	diffWithGolden $1 $1-xfakes-cpp.cpp
 	diffWithGolden $1 $1-xfakes-cpp-globals.cpp
@@ -142,7 +144,8 @@ testOutputSameAsGoldenVS()
 	checkOutputSameAsGolden vs
 }
 
-. $(dirname "$0")/gen-xfakes.sh 
-. ./shunit2/shunit2
+#. $(dirname "$0")/gen-xfakes.sh 
+. ../gen-xfakes.sh 
+. ../shunit2/shunit2
 
 
