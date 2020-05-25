@@ -105,7 +105,7 @@ linkErrorGcc()
 
 isolateUndefinedSymbolsGcc()
 {
-	linkErrorGcc | sed -e's/^.*\`//' -e"s/'$//"
+	linkErrorGcc | sed -e's/.*`//' -e"s/'$//"
 }
 
 linkErrorVS_C()
@@ -187,7 +187,7 @@ gen_xfakes()
 	isolateUndefinedSymbolsClang <$input_file >>$undefines
 	isolateUndefinedSymbolsVS_C <$input_file >>$undefines
 	isolateUndefinedSymbolsVS_Cpp <$input_file >>$undefines
-	sort $undefines | uniq >$sorted_undefines
+	LC_ALL=C sort $undefines | uniq >$sorted_undefines
 
 
 	fakes_c=$2-c.c	
