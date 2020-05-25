@@ -1,6 +1,8 @@
 #! /bin/sh
 
 TEST_DIR=.
+TEMP_DIR=tmp
+FAKES_BASENAME=xfakes
 
 testFilterLinkerErrorsClang()
 {
@@ -110,23 +112,26 @@ testCommandLine()
 	assertContains "$(gen_xfakes input_file.txt output_base_name)" ""
 }
 
+
 diffWithGolden()
 {
 	assertEquals "$2 is different than golden copy" "" "$(diff $TEST_DIR/$2 $TEST_DIR/golden/$2)"
 }
 
+
 cleanup()
 {
-	rm -f $TEST_DIR/$1-xfakes*.*	
+	rm -r $TEST_DIR/$TEMP_DIR	
 }
 
 checkOutputSameAsGolden()
 {
-	gen_xfakes $TEST_DIR/example-$1-link-errors.txt $TEST_DIR/$1-xfakes
-	diffWithGolden $1 $1-xfakes-c.c
-	diffWithGolden $1 $1-xfakes-cpp.cpp
-	diffWithGolden $1 $1-xfakes-cpp-globals.cpp
-	cleanup $1
+	mkdir -p tmp
+	gen_xfakes $TEST_DIR/example-output/$1-link-errors.txt $TEST_DIR/$TEMP_DIR/$FAKES_BASENAME-$1
+	diffWithGolden $1 $FAKES_BASENAME-$1-c.c
+	diffWithGolden $1 $FAKES_BASENAME-$1-cpp.cpp
+	diffWithGolden $1 $FAKES_BASENAME-$1-cpp-globals.cpp
+	# cleanup $1
 }
 
 testOutputSameAsGoldenGcc()

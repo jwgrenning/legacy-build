@@ -1,0 +1,21 @@
+{
+	"folders":
+	[
+		{
+			"path": "/home/james/repos/github/gen-xfakes"
+		}
+	],
+    "build_systems":
+    [
+        {
+            /* your existing build command arguments */
+            "name": "gen-xfakes",
+            "working_dir": "${project_path}/test",
+            "cmd": ["./test-gen-xfakes.sh"],
+
+            /*  add target and syntax */
+            "target": "ansi_color_build",
+            "syntax": "Packages/ANSIescape/ANSI.sublime-syntax"
+        }
+    ]
+}
