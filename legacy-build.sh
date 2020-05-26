@@ -81,7 +81,7 @@ show_other_errors()
 
 unique_link_error_count()
 {
-	cat $1 | show_unique_link_errors | wc -l 
+	cat $1 | show_unique_link_errors | wc -l | sed -e's/ *//'
 }
 
 run_generate_fakes_script()
