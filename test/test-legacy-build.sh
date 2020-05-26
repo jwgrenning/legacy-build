@@ -39,10 +39,16 @@ testWarningSuggestion()
 	assertContains "${out}" "-Wno-"
 }
 
+testOtherErrorNotConfusedByLinkerError()
+{
+	out="$(cat $EXAMPLES_DIR/gcc-link-error-legacy.txt | show_other_compile_errors)"
+	assertEquals "show_other_compile_errors" "0" "$?"
+}
+
 testOtherErrorGiveUp()
 {
-	out="$(cat $EXAMPLES_DIR/gcc-other-error.txt | show_other_errors)"
-	assertEquals "show_other_errors" "1" "$?" 
+	out="$(cat $EXAMPLES_DIR/gcc-other-error.txt | show_other_compile_errors)"
+	assertEquals "show_other_compile_errors" "1" "$?"
 	assertContains "${out}" "Sorry"
 }
 

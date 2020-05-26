@@ -71,9 +71,9 @@ show_warnings()
 	return 1
 }
 
-show_other_errors()
+show_other_compile_errors()
 {
-	grep ": error: " $1
+	grep -v ": error: ld" $1 |	grep ": error: "
 	test "$?" = "1" && return 0
 	echo "Sorry, I can't help with this error."
 	return 1
@@ -117,7 +117,7 @@ legacy_build_suggestion()
 	show_not_declared $ERROR_FILE &&\
 		show_no_such_file_or_directory $ERROR_FILE &&\
 		show_warnings $ERROR_FILE &&\
-		show_other_errors $ERROR_FILE &&\
+		show_other_compile_errors $ERROR_FILE &&\
 		show_unique_link_errors $ERROR_FILE
 	test "$unique_link_error_count)" != "0" && generate_fakes
 }
@@ -128,8 +128,8 @@ legacy_build_main()
 	cd $1
 	make 2>$ERROR_FILE
 	cat $ERROR_FILE
-	cat $ERROR_FILE | legacy_build_action
+	cat $ERROR_FILE | legacy_build_suggestion
 	cd $start_dir
 }
 
-[ $0 = "legacy-build.sh" ] && legacy_build_main
+[ $0 = "legacy-build.sh" ] && legacy_build_main $1
