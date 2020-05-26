@@ -1,8 +1,10 @@
+# /bin/sh
+
 preambleCFakes()
 {
 	cat > $1 <<- EOM
 /*
-    File: $(basename -- $1) From: $(basename -- $2)
+    Fakes generated from: $2
 
  	Generated file to help to quickly stub C-linkage unresolved external references
 
@@ -33,7 +35,7 @@ preambleCppFakes()
 {
 	cat > $1 <<- EOM
 /*
-    File: $(basename -- $1) From: $(basename -- $2)
+    Fakes generated from: $2
 
  	Generated file to help to quickly stub C++ undefined external functions.
  	
@@ -70,7 +72,7 @@ preambleCppGlobalFakes()
 {
 	cat > $1 <<- EOM
 /*
-    File: $(basename -- $1) From: $(basename -- $2)
+    Fakes generated from: $2
 
  	Generated file to help to quickly stub C++ undefined external globals.
  	
@@ -202,6 +204,5 @@ gen_xfakes()
 
 }
 
-if [[ "$(basename -- "$0")" == "gen-xfakes.sh" ]]; then
-	gen_xfakes $@
-fi
+[ $0 = "gen-xfakes.sh" ] && gen_xfakes $@
+

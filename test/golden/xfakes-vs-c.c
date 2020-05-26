@@ -1,5 +1,5 @@
 /*
-    File: vs-xfakes-c.c From: example-vs-link-errors.txt
+    Fakes generated from: ./example-output/vs-link-errors.txt
 
  	Generated file to help to quickly stub C-linkage unresolved external references
 

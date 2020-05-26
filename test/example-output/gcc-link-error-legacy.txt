@@ -1,0 +1,9 @@
+/usr/bin/ld: lib/libHomeAutomation.a(LightScheduler.o): in function `LightScheduler::LightScheduler()':
+/home/james/repos/bitbucket/cyber-dojo-start-points/ref-cpp/Legacy_1_dev/src/app/LightScheduler.cpp:54: undefined reference to `TimeService::TimeService()'
+/usr/bin/ld: /home/james/repos/bitbucket/cyber-dojo-start-points/ref-cpp/Legacy_1_dev/src/app/LightScheduler.cpp:54: undefined reference to `LightSwitch::LightSwitch()'
+/usr/bin/ld: /home/james/repos/bitbucket/cyber-dojo-start-points/ref-cpp/Legacy_1_dev/src/app/LightScheduler.cpp:54: undefined reference to `TimeService::~TimeService()'
+/usr/bin/ld: lib/libHomeAutomation.a(LightScheduler.o): in function `LightScheduler::~LightScheduler()':
+/usr/bin/ld: /home/james/repos/bitbucket/cyber-dojo-start-points/ref-cpp/Legacy_1_dev/src/app/LightScheduler.cpp:65: undefined reference to `LightSwitch::~LightSwitch()'
+/usr/bin/ld: lib/libHomeAutomation.a(LightScheduler.o):(.data.rel.ro._ZTI26LightSchedulerWakeUpAction[_ZTI26LightSchedulerWakeUpAction]+0x10): undefined reference to `typeinfo for WakeUpAction'
+collect2: error: ld returned 1 exit status
+make[1]: *** [/home/james/repos/github/cpputest/build/MakefileWorker.mk:489: HomeAutomation_tests] Error 1

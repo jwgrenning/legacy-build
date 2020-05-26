@@ -1,5 +1,5 @@
 /*
-    File: gcc-xfakes-c.c From: example-gcc-link-errors.txt
+    Fakes generated from: ./example-output/gcc-link-errors.txt
 
  	Generated file to help to quickly stub C-linkage unresolved external references
 

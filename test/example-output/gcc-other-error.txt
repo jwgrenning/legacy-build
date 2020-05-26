@@ -1,0 +1,5 @@
+src/app/LightScheduler.cpp:39:1: error: new types may not be defined in a return type
+   39 | class LightSchedulerWakeUpAction : public WakeUpAction
+      | ^~~~~
+compilation terminated due to -Wfatal-errors.
+make[1]: *** [/home/james/repos/github/cpputest/build/MakefileWorker.mk:511: objs/src/app/LightScheduler.o] Error 1

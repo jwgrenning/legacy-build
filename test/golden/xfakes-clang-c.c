@@ -1,5 +1,5 @@
 /*
-    File: clang-xfakes-c.c From: example-clang-link-errors.txt
+    Fakes generated from: ./example-output/clang-link-errors.txt
 
  	Generated file to help to quickly stub C-linkage unresolved external references
 

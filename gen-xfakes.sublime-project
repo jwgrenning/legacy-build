@@ -11,7 +11,8 @@
             /* your existing build command arguments */
             "name": "gen-xfakes",
             "working_dir": "${project_path}/test",
-            "cmd": ["./test-gen-xfakes.sh"],
+            // "cmd": ["./test-gen-xfakes.sh"],
+            "cmd": ["./all-tests.sh"],
 
             /*  add target and syntax */
             "target": "ansi_color_build",

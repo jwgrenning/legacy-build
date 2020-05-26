@@ -1,0 +1,6 @@
+In file included from tests/LightSchedulerTest.cpp:6:
+./inc/app/LightScheduler.h:10:10: fatal error: RandomMinuteGenerator.h: No such file or directory
+   10 | #include "RandomMinuteGenerator.h"
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[1]: *** [/home/james/repos/github/cpputest/build/MakefileWorker.mk:511: objs/tests/LightSchedulerTest.o] Error 1

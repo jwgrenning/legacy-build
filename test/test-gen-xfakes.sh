@@ -115,7 +115,7 @@ testCommandLine()
 
 diffWithGolden()
 {
-	assertEquals "$2 is different than golden copy" "" "$(diff $TEST_DIR/$2 $TEST_DIR/golden/$2)"
+	assertEquals "$2 is different than golden copy" "" "$(diff ${TEST_DIR}/${TEMP_DIR}/$2 ${TEST_DIR}/golden/$2)"
 }
 
 
@@ -126,12 +126,12 @@ cleanup()
 
 checkOutputSameAsGolden()
 {
+	cleanup $1
 	mkdir -p tmp
 	gen_xfakes $TEST_DIR/example-output/$1-link-errors.txt $TEST_DIR/$TEMP_DIR/$FAKES_BASENAME-$1
 	diffWithGolden $1 $FAKES_BASENAME-$1-c.c
 	diffWithGolden $1 $FAKES_BASENAME-$1-cpp.cpp
 	diffWithGolden $1 $FAKES_BASENAME-$1-cpp-globals.cpp
-	# cleanup $1
 }
 
 testOutputSameAsGoldenGcc()

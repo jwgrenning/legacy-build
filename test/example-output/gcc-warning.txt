@@ -1,0 +1,6 @@
+src/app/LightScheduler.cpp:27:12: error: ‘foo’ defined but not used [-Werror=unused-variable]
+   27 | static int foo;
+      |            ^~~
+compilation terminated due to -Wfatal-errors.
+cc1plus: all warnings being treated as errors
+make[1]: *** [/home/james/repos/github/cpputest/build/MakefileWorker.mk:511: objs/src/app/LightScheduler.o] Error 1

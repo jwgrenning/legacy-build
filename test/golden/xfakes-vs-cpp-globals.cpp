@@ -1,5 +1,5 @@
 /*
-    File: vs-xfakes-cpp-globals.cpp From: example-vs-link-errors.txt
+    Fakes generated from: ./example-output/vs-link-errors.txt
 
  	Generated file to help to quickly stub C++ undefined external globals.
  	

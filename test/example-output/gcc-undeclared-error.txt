@@ -1,0 +1,6 @@
+tests/LightSchedulerTest.cpp: In member function ‘virtual void TEST_LightScheduler_Create_Test::testBody()’:
+tests/LightSchedulerTest.cpp:21:2: error: ‘LightScheduler’ was not declared in this scope
+   21 |  LightScheduler scheduler;
+      |  ^~~~~~~~~~~~~~
+compilation terminated due to -Wfatal-errors.
+make[1]: *** [/home/james/repos/github/cpputest/build/MakefileWorker.mk:511: objs/tests/LightSchedulerTest.o] Error 1
