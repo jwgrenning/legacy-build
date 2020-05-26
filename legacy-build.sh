@@ -8,18 +8,96 @@ NOT_DECLARED_ERR="not declared in this scope"
 INCLUDE_ERROR_STR="No such file or directory"
 MAKEFILE_INCLUDE_STR="INCLUDE_DIRS += "
 MAKEFILE_WARNING_STR="CPPUTEST_WARNINGFLAGS += "
+## declare an array variable
+declare -a not_declared=(
+	"not declared in this scope"
+	"unknown type name"
+	)
 
+declare -a include_head=(
+	".* error: "
+	".* error: '"
+	)
+declare -a include_tail=(
+	": No such file or directory"
+	"' file not found"
+	)
 
+declare -a linker_error_in_file=(
+	": error: ld"
+	"clang: error: linker"
+	"LNK2019"
+	)
 
-translator()
+looks_like()
 {
-	out=$(grep "$1")
-	if [ ! -z "$out" ]; then
-		echo $out
-		echo "Looks like you need to $2"
-		return 1
-	fi
+	echo "Looks like you $1"
+}
+
+show_not_declared()
+{
+	for text in "${not_declared[@]}" ]; do
+		out=$(grep -e "${text}" $1)
+		if [ "$?" = "0" ]; then
+			echo $out
+			looks_like "have a missing #include (${text})"
+			return 1
+		fi
+	done
 	return 0
+}
+
+show_missing_include_path()
+{
+	for text in "${include_tail[@]}" ]; do
+		out=$(grep -e "${text}" $1)
+		if [ "$?" = "0" ]; then
+			echo $out
+			looks_like "a missing include path in your makefile (${text})"
+			file=$(isolate_missing_file "${out}")
+			echo "Missing path to ${file}"
+			suggest_include_path $file
+			return 1
+		fi
+	done
+	return 0
+}
+
+isolate_missing_file()
+{
+	line="$@"
+	for text in "${include_head[@]}" ]; do
+		line=$(echo $line | sed -e"s/${text}//")
+	done
+	for text in "${include_tail[@]}" ]; do
+		line=$(echo $line | sed -e"s/${text}//")
+	done
+	echo $line
+}
+
+suggest_include_path()
+{
+	cd $INCLUDE_ROOT
+	echo "$ find . -name ${filename}"
+	filepath=$(find . -name $filename)
+	if [ "${filepath}" == "" ]; then
+		echo "File not found under ${INCLUDE_ROOT}"
+	else
+		echo $filepath
+		echo "Add this to your makefile:"	
+		echo "${MAKEFILE_INCLUDE_STR}$(dirname $filepath)"
+	fi	
+}
+
+link_errors_exist()
+{
+	for text in "${linker_error_in_file[@]}" ]; do
+		grep "${text}" $1 >/dev/null
+		if [ "$?" == "0" ]; then
+			return 0
+		fi
+	done
+	return 1
 }
 
 show_noise_reduced_heading()
@@ -27,39 +105,6 @@ show_noise_reduced_heading()
 	echo "-----------------------------------------"
 	echo "--------- Noise reduced output ----------"
 	echo "-----------------------------------------"
-}
-
-show_not_declared()
-{
-	cat $1 | translator "${NOT_DECLARED_ERR}" "add a #include to your test file"
-	return $?
-}
-
-missing_include_filename()
-{
-	sed -e's/.*fatal error: //' | sed -e's/:.*$//'
-}
-
-show_no_such_file_or_directory()
-{
-	cat $1 | translator "${INCLUDE_ERROR_STR}" "add an include path to your build"
-	if [ "$?" != "0" ]; then
-		filename=$(grep "${INCLUDE_ERROR_STR}" $1 | missing_include_filename)
-		echo "Missing include path for '$filename'"
-		cd $INCLUDE_ROOT
-		echo "$ find . -name ${filename}"
-		filepath=$(find . -name $filename)
-		echo $filepath
-		echo "Add '${MAKEFILE_INCLUDE_STR}$(dirname $filepath)' to your makefile"
-		return 1
-	fi
-	return 0
-}
-
-show_unique_link_errors()
-{
-	grep "undefined reference to" | 
-		sed -e's/^.* undefined/undefined/' -e's/ follow//' | sort | uniq
 }
 
 show_warnings()
@@ -73,15 +118,12 @@ show_warnings()
 
 show_other_compile_errors()
 {
-	grep -v ": error: ld" $1 |	grep ": error: "
-	test "$?" = "1" && return 0
+	grep ": error: ld" $1 >/dev/null
+	test "$?" = "0" && return 1
+	grep ": error: " $1
+	test "$?" = "1" && return 1
 	echo "Sorry, I can't help with this error."
-	return 1
-}
-
-unique_link_error_count()
-{
-	cat $1 | show_unique_link_errors | wc -l | sed -e's/ *//'
+	return 0
 }
 
 run_generate_fakes_script()
@@ -91,35 +133,27 @@ run_generate_fakes_script()
 
 generate_fakes()
 {
-	link_error_count=$(unique_link_error_count)
-	echo "Link error count ${link_error_count}"
-	if [ "${link_error_count}" = "0" ]; then
-		return 1
-	elif [ "${link_error_count}" = "1" ] || [ "${link_error_count}" = "2" ]; then
-		echo "You have a single linker error to fix. -- Make a stub or add a file to the build"
+	[ ! link_errors_exist ] && return 1 
+	echo "You have linker errors. -- Add a file, make stubs or use the gernerated exploding fakes"
+	if [ "$(ls ${FAKES_BASENAME}-*.* 2>/dev/null)" = "" ]; then
+		echo "Generating fakes"
+		run_generate_fakes_script $ERROR_FILE $FAKES_BASENAME
+		echo "Review generated fakes, and incrementally add them to the build:"
+		echo "$(ls ${FAKES_BASENAME}-*.*)"
 	else
-		if [ "$(ls ${FAKES_BASENAME}-*.* 2>/dev/null)" = "" ]; then
-			echo "Generating fakes"
-			run_generate_fakes_script $ERROR_FILE $FAKES_BASENAME
-			echo "Review generated fakes, and incrementally add them to the build:"
-			echo "$(ls ${FAKES_BASENAME}-*.*)"
-		else
-			echo "Generated fakes file already exists; delete or rename files for new gen-xfakes."
-		fi
+		echo "Generated fakes file already exists; delete or rename files for new gen-xfakes."
 	fi
 	return 0
 }
-
 
 legacy_build_suggestion()
 {
 	show_noise_reduced_heading
 	show_not_declared $ERROR_FILE &&\
-		show_no_such_file_or_directory $ERROR_FILE &&\
+		show_missing_include_path $ERROR_FILE &&\
 		show_warnings $ERROR_FILE &&\
-		show_other_compile_errors $ERROR_FILE &&\
-		show_unique_link_errors $ERROR_FILE
-	test "$unique_link_error_count)" != "0" && generate_fakes
+		show_other_compile_errors $ERROR_FILE
+	test link_errors_exist && generate_fakes
 }
 
 legacy_build_main()

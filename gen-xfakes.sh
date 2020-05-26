@@ -183,14 +183,13 @@ gen_xfakes()
 	input_file=$1
 	must_exist $input_file
 	undefines=$(mktemp)
-	sorted_undefines=$(mktemp)
+	sorted_undefines=$2-sorted-undefines.txt
 
 	isolateUndefinedSymbolsGcc <$input_file >$undefines
 	isolateUndefinedSymbolsClang <$input_file >>$undefines
 	isolateUndefinedSymbolsVS_C <$input_file >>$undefines
 	isolateUndefinedSymbolsVS_Cpp <$input_file >>$undefines
 	LC_ALL=C sort $undefines | uniq >$sorted_undefines
-
 
 	fakes_c=$2-c.c	
 	fakes_cpp=$2-cpp.cpp	
@@ -200,7 +199,6 @@ gen_xfakes()
 	makeFakes $input_file $sorted_undefines Cpp       $fakes_cpp
 	makeFakes $input_file $sorted_undefines CppGlobal $fakes_cpp_globals
 	rm $undefines
-	rm $sorted_undefines
 
 }
 

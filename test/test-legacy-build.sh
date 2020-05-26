@@ -5,17 +5,17 @@ TEST_DIR=.
 TEMP_DIR=tmp
 EXAMPLES_DIR=$TEST_DIR/example-output
 
-testGetFilenameForMissingInclude()
+test_get_filename_for_missing_include()
 {
 	error="blah fatal error: RandomMinuteGenerator.h: No such file or directory"
-	assertEquals 'RandomMinuteGenerator.h' $(echo "${error}" | missing_include_filename)
+	assertEquals 'RandomMinuteGenerator.h' $(isolate_missing_file "${error}")
 }
 
-testNotDeclaredSuggestion()
+test_not_declared_suggestion()
 {
-	out="$(cat $EXAMPLES_DIR/gcc-undeclared-error.txt | show_not_declared)"
+	out=$(show_not_declared $EXAMPLES_DIR/gcc-undeclared-error.txt)
 	assertEquals "show_not_declared should return 1 for not delcared errors" "1" "$?" 
-	assertContains "${out}" "add a #include"
+	assertContains "${out}" "#include"
 }
 
 find() #faking find
@@ -23,15 +23,15 @@ find() #faking find
 	echo "./foo/bar/Filename.h"
 }
 
-testNoSuchFileOrDirecorySuggestion()
+test_show_missing_include_path()
 {
-	out="$(cat $EXAMPLES_DIR/gcc-missing-include-path.txt | show_no_such_file_or_directory)"
-	assertEquals "show_no_such_file_or_directory" "1" "$?" 
-	assertContains "${out}" "Missing include path"
+	out=$(show_missing_include_path $EXAMPLES_DIR/gcc-missing-include-path.txt)
+	assertEquals "show_missing_include_path" "1" "$?" 
+	assertContains "${out}" "missing include path"
 	assertContains "${out}" "INCLUDE_DIRS += ./foo/bar"
 }
 
-testWarningSuggestion()
+test_warning_suggestion()
 {
 	out="$(cat $EXAMPLES_DIR/gcc-warning.txt | show_warnings)"
 	assertEquals "show_warnings" "1" "$?" 
@@ -39,22 +39,42 @@ testWarningSuggestion()
 	assertContains "${out}" "-Wno-"
 }
 
-testOtherErrorNotConfusedByLinkerError()
+helper_test_link_errors_exist()
 {
-	out="$(cat $EXAMPLES_DIR/gcc-link-error-legacy.txt | show_other_compile_errors)"
-	assertEquals "show_other_compile_errors" "0" "$?"
+	link_errors_exist $1
+	assertEquals "link_errors_exist failed fo $1" "0" "$?" 	
 }
 
-testOtherErrorGiveUp()
+test_link_errors_exist_in_examples()
 {
-	out="$(cat $EXAMPLES_DIR/gcc-other-error.txt | show_other_compile_errors)"
+	helper_test_link_errors_exist $EXAMPLES_DIR/gcc-link-error-legacy.txt
+	helper_test_link_errors_exist $EXAMPLES_DIR/gcc-link-errors.txt
+	helper_test_link_errors_exist $EXAMPLES_DIR/clang-link-errors.txt
+	helper_test_link_errors_exist $EXAMPLES_DIR/vs-link-errors.txt
+}
+
+test_other_error_not_confused_by_linker_error()
+{
+	out="$(show_other_compile_errors ${EXAMPLES_DIR}/gcc-link-error-legacy.txt)"
 	assertEquals "show_other_compile_errors" "1" "$?"
+}
+
+test_other_error_give_up()
+{
+	out="$(show_other_compile_errors ${EXAMPLES_DIR}/gcc-other-error.txt)"
+	assertEquals "show_other_compile_errors" "0" "$?"
 	assertContains "${out}" "Sorry"
 }
 
-testUniqueLinkCount()
+ignore_test_unique_link_errors()
 {
-	out="$(cat $EXAMPLES_DIR/gcc-link-error-legacy.txt | unique_link_error_count)"
+	out="$(unique_link_errors $EXAMPLES_DIR/gcc-link-error-legacy.txt)"
+	assertEquals "nothing" "${out}"
+}
+
+ignore_testUniqueLinkCount()
+{
+	out="$(unique_link_error_count $EXAMPLES_DIR/gcc-link-error-legacy.txt)"
 	assertEquals "5" "${out}"
 }
 
@@ -78,7 +98,6 @@ testWontOverwriteGeneratedFakes()
 {
 	LS_OUTPUT="something"
 	out="$(cat $EXAMPLES_DIR/gcc-link-error-legacy.txt | generate_fakes)"
-	assertContains "\n${out}\n" "Link error count 5"
 	assertContains "\n${out}\n" "Generated fakes file already exists"
 }
 
@@ -86,10 +105,13 @@ testLinkErrorSuggestions()
 {
 	LS_OUTPUT="nothing"
 	out="$(cat $EXAMPLES_DIR/gcc-link-error-legacy.txt | generate_fakes)"
-	assertContains "\n${out}\n" "${out}" "Link error count 5"
 	assertContains "\n${out}\n" "${out}" "Generating fakes"
 	assertContains "\n${out}\n" "${out}" "run_generate_fakes_script"
 }
+
+
+
+
 
 . ../shunit2/shunit2
 
