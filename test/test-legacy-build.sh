@@ -28,7 +28,7 @@ test_show_missing_include_path()
 	out=$(show_missing_include_path $EXAMPLES_DIR/gcc-missing-include-path.txt)
 	assertEquals "show_missing_include_path" "0" "$?"
 	assertContains "${out}" "missing include path"
-	assertContains "${out}" "INCLUDE_DIRS += ./foo/bar"
+	assertContains "${out}" 'INCLUDE_DIRS += $(INCLUDE_ROOT)/foo/bar'
 }
 
 test_warning_suggestion()
@@ -42,14 +42,22 @@ test_warning_suggestion()
 helper_test_link_errors_exist()
 {
 	link_errors_exist $1
-	assertEquals "link_errors_exist failed fo $1" "0" "$?" 	
+	assertEquals "link_errors_exist failed for $1" "0" "$?" 	
 }
 
-test_link_errors_exist_in_examples()
+test_link_errors_exist_in_examples_gcc()
 {
 	helper_test_link_errors_exist $EXAMPLES_DIR/gcc-link-error-legacy.txt
 	helper_test_link_errors_exist $EXAMPLES_DIR/gcc-link-errors.txt
+}
+
+test_link_errors_exist_in_examples_clang()
+{
 	helper_test_link_errors_exist $EXAMPLES_DIR/clang-link-errors.txt
+}
+
+test_link_errors_exist_in_examples_vs()
+{
 	helper_test_link_errors_exist $EXAMPLES_DIR/vs-link-errors.txt
 }
 
@@ -68,7 +76,7 @@ test_other_error_give_up()
 
 ignore_test_unique_link_errors()
 {
-	out="$(unique_link_errors $EXAMPLES_DIR/gcc-link-error-legacy.txt)"
+	out="$(unique_link_errors ${EXAMPLES_DIR}/gcc-other-error.txt)"
 	assertEquals "nothing" "${out}"
 }
 
@@ -76,6 +84,11 @@ ignore_testUniqueLinkCount()
 {
 	out="$(unique_link_error_count $EXAMPLES_DIR/gcc-link-error-legacy.txt)"
 	assertEquals "5" "${out}"
+}
+
+show_fakes_stats() # fake
+{
+	echo "Showing stats with grep"	
 }
 
 LS_OUTPUT=""
