@@ -1,4 +1,6 @@
-# Crash to Pass (`legacy-build` and `gen-xfakes`)
+# Crash to Pass Toolkit
+
+## `legacy-build` and `gen-xfakes`
 
 This repo has two scripts to help C and C++ programmers drag unwilling legacy C and C++ into a test harness.
 
@@ -18,7 +20,9 @@ linker problems and on to running your code.
 Set your build so that it fails on the first error.
 For gcc and clang `-Wfatal-errors`.
 
-So far, this has only been tested on gcc version 9.3.0.
+So far, this has been tested on
+* ubuntu gcc version 9.3.0.
+* mac osx gcc version 7.4.0
 
 
 ### gen-xfakes 
@@ -54,6 +58,7 @@ $ path/to/gen-xfakes.sh error-output.txt xfakes
  * clang
  * Visual Studio -- best guess
  * Feel free to give me a contribution
+ * All these compilers are moving target, so you may have to fiddle with it.
 
  ## To be supported formats
 
