@@ -1,14 +1,12 @@
 #!/bin/bash
 
 # gcc settings, -fatal-errors	
-ERROR_FILE=build-errors.txt
+ERROR_FILE=tmp-build-errors.txt
 FAKES_BASENAME=tmp-fakes
-INCLUDE_ROOT=.
-NOT_DECLARED_ERR="not declared in this scope"
-INCLUDE_ERROR_STR="No such file or directory"
-MAKEFILE_INCLUDE_STR="INCLUDE_DIRS += "
-MAKEFILE_WARNING_STR="CPPUTEST_WARNINGFLAGS += "
-## declare an array variable
+INCLUDE_ROOT=${INCLUDE_ROOT:-.}
+MAKEFILE_INCLUDE_STR=${MAKEFILE_INCLUDE_STR:-"INCLUDE_DIRS += "}
+MAKEFILE_WARNING_STR=${MAKEFILE_WARNING_STR:-"CPPUTEST_WARNINGFLAGS += "}
+
 declare -a not_declared=(
 	"not declared in this scope"
 	"unknown type name"
@@ -36,31 +34,31 @@ looks_like()
 
 show_not_declared()
 {
-	for text in "${not_declared[@]}" ]; do
-		out=$(grep -e "${text}" $1)
+	for text in "${not_declared[@]}"; do
+		out=$(grep "${text}" $1)
 		if [ "$?" = "0" ]; then
 			echo $out
 			looks_like "have a missing #include (${text})"
-			return 1
+			return 0
 		fi
 	done
-	return 0
+	return 1
 }
 
 show_missing_include_path()
 {
-	for text in "${include_tail[@]}" ]; do
-		out=$(grep -e "${text}" $1)
+	for text in "${include_tail[@]}"; do
+		out=$(grep "${text}" $1)
 		if [ "$?" = "0" ]; then
 			echo $out
 			looks_like "a missing include path in your makefile (${text})"
 			file=$(isolate_missing_file "${out}")
 			echo "Missing path to ${file}"
 			suggest_include_path $file
-			return 1
+			return 0
 		fi
 	done
-	return 0
+	return 1
 }
 
 isolate_missing_file()
@@ -78,8 +76,8 @@ isolate_missing_file()
 suggest_include_path()
 {
 	cd $INCLUDE_ROOT
-	echo "$ find . -name ${filename}"
-	filepath=$(find . -name $filename)
+	echo "$ find . -name $1"
+	filepath=$(find . -name $1)
 	if [ "${filepath}" == "" ]; then
 		echo "File not found under ${INCLUDE_ROOT}"
 	else
@@ -92,10 +90,7 @@ suggest_include_path()
 link_errors_exist()
 {
 	for text in "${linker_error_in_file[@]}" ]; do
-		grep "${text}" $1 >/dev/null
-		if [ "$?" == "0" ]; then
-			return 0
-		fi
+		grep "${text}" $1 >/dev/null  && return 0
 	done
 	return 1
 }
@@ -110,10 +105,10 @@ show_noise_reduced_heading()
 show_warnings()
 {
 	grep "\[\-W" $1
-	test "$?" = "1" && return 0
+	test "$?" = "1" && return 1
 	echo "You could [temporarily] turn off the warning with"
-	echo "${MAKEFILE_INCLUDE_STR}-Wno-<warning-spec>"
-	return 1
+	echo "${MAKEFILE_WARNING_STR}-Wno-<warning-spec>"
+	return 0
 }
 
 show_other_compile_errors()
@@ -133,7 +128,6 @@ run_generate_fakes_script()
 
 generate_fakes()
 {
-	[ ! link_errors_exist ] && return 1 
 	echo "You have linker errors. -- Add a file, make stubs or use the gernerated exploding fakes"
 	if [ "$(ls ${FAKES_BASENAME}-*.* 2>/dev/null)" = "" ]; then
 		echo "Generating fakes"
@@ -149,11 +143,11 @@ generate_fakes()
 legacy_build_suggestion()
 {
 	show_noise_reduced_heading
-	show_not_declared $ERROR_FILE &&\
-		show_missing_include_path $ERROR_FILE &&\
-		show_warnings $ERROR_FILE &&\
-		show_other_compile_errors $ERROR_FILE
-	test link_errors_exist && generate_fakes
+	show_not_declared $1 && return 1
+	show_missing_include_path $1 && return 1
+	show_warnings $1 && return 1
+	show_other_compile_errors $1 && return 1
+	link_errors_exist $1 && generate_fakes
 }
 
 legacy_build_main()
@@ -162,7 +156,7 @@ legacy_build_main()
 	cd $1
 	make 2>$ERROR_FILE
 	cat $ERROR_FILE
-	cat $ERROR_FILE | legacy_build_suggestion
+	legacy_build_suggestion $ERROR_FILE
 	cd $start_dir
 }
 

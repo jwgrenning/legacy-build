@@ -1,5 +1,5 @@
 #!/bin/sh
-. ../legacy-build.sh 
+. ../legacy-build.sh
 
 TEST_DIR=.
 TEMP_DIR=tmp
@@ -14,7 +14,7 @@ test_get_filename_for_missing_include()
 test_not_declared_suggestion()
 {
 	out=$(show_not_declared $EXAMPLES_DIR/gcc-undeclared-error.txt)
-	assertEquals "show_not_declared should return 1 for not delcared errors" "1" "$?" 
+	assertEquals "show_not_declared should return 1 for not delcared errors" "0" "$?"
 	assertContains "${out}" "#include"
 }
 
@@ -26,7 +26,7 @@ find() #faking find
 test_show_missing_include_path()
 {
 	out=$(show_missing_include_path $EXAMPLES_DIR/gcc-missing-include-path.txt)
-	assertEquals "show_missing_include_path" "1" "$?" 
+	assertEquals "show_missing_include_path" "0" "$?"
 	assertContains "${out}" "missing include path"
 	assertContains "${out}" "INCLUDE_DIRS += ./foo/bar"
 }
@@ -34,7 +34,7 @@ test_show_missing_include_path()
 test_warning_suggestion()
 {
 	out="$(cat $EXAMPLES_DIR/gcc-warning.txt | show_warnings)"
-	assertEquals "show_warnings" "1" "$?" 
+	assertEquals "show_warnings" "0" "$?"
 	assertContains "${out}" "turn off the warning"
 	assertContains "${out}" "-Wno-"
 }
