@@ -26,9 +26,18 @@ find() #faking find
 test_show_missing_include_path()
 {
     out=$(show_missing_include_path $EXAMPLES_DIR/gcc-missing-include-path.txt)
+    echo "output: ${out}"
     assertEquals "show_missing_include_path" "0" "$?"
-    assertContains "${out}" "missing include path"
+    assertContains "${out}" "Missing include path to Filename.h"
     assertContains "${out}" 'INCLUDE_DIRS += $(INCLUDE_ROOT)/foo/bar'
+}
+
+test_show_missing_include_partial_path()
+{
+    out=$(show_missing_include_path $EXAMPLES_DIR/gcc-missing-include-partial-path.txt)
+    assertEquals "show_missing_include_path" "0" "$?"
+    assertContains "${out}" "Path to foo/bar/Filename.h"
+    assertContains "${out}" './foo/bar/Filename.h'
 }
 
 test_warning_suggestion()
@@ -107,11 +116,11 @@ run_generate_fakes_script()
     echo "fake run_generate_fakes_script $1 $2"
 }
 
-testWontOverwriteGeneratedFakes()
+testSayWhenOverwriteingGeneratedFakes()
 {
     LS_OUTPUT="something"
     out="$(cat $EXAMPLES_DIR/gcc-link-error-legacy.txt | generate_fakes)"
-    assertContains "\n${out}\n" "Generated fakes file already exists"
+    assertContains "\n${out}\n" "Removing earlier generated fakes"
 }
 
 testLinkErrorSuggestions()
@@ -121,9 +130,6 @@ testLinkErrorSuggestions()
     assertContains "\n${out}\n" "${out}" "Generating fakes"
     assertContains "\n${out}\n" "${out}" "run_generate_fakes_script"
 }
-
-
-
 
 
 . ../shunit2/shunit2
