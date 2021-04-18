@@ -52,8 +52,9 @@ show_missing_include_path()
         if [ "$?" = "0" ]; then
             echo $out
             looks_like "a missing include path in your makefile (${text})"
+            grep "#include" $1
             file=$(isolate_missing_file "${out}")
-            echo "Missing path to ${file}"
+            echo "Missing include path to ${file}"
             suggest_include_path $file
             return 0
         fi
@@ -76,22 +77,29 @@ isolate_missing_file()
 suggest_include_path()
 {
     cd $INCLUDE_ROOT
-    echo "$ find . -name $1 # from ${INCLUDE_ROOT}"
-    filepath=$(find . -name $1)
+    target=$(basename $1)
+    partial_path=$(dirname $1)
+    search_path=${INCLUDE_ROOT}
+
+    echo "$ cd ${INCLUDE_ROOT}"
+    echo "$ find . -name ${target}"
+    filepath=$(find . -name ${target})
     if [ "${filepath}" == "" ]; then
-        echo "File not found under ${INCLUDE_ROOT}"
+        echo "${target} not found under ${search_path}"
     else
-        dir=$(dirname $filepath)
-        include_path="\$(INCLUDE_ROOT)${dir#?}"
+        echo "Path to $1"
         echo $filepath
-        echo "Add this to your makefile:"
-        echo "${MAKEFILE_INCLUDE_STR}${include_path}"
+        if [ "${partial_path}" == "." ]; then
+            dir=$(dirname $filepath)
+            include_path="\$(INCLUDE_ROOT)${dir#?}"
+            echo "Add this to your makefile:"
+            echo "${MAKEFILE_INCLUDE_STR}${include_path}"
+        fi
     fi
 }
 
 link_errors_exist()
 {
-    echo "link_errors_exist check for $1"
     for text in "${linker_error_in_file[@]}"; do
         grep "${text}" $1 >/dev/null
         if [ "$?" == "0" ]; then
@@ -103,9 +111,9 @@ link_errors_exist()
 
 show_noise_reduced_heading()
 {
-    echo "-----------------------------------------"
-    echo "--------- Noise reduced output ----------"
-    echo "-----------------------------------------"
+    echo "-----------------------------------------------------"
+    echo "--------- Noise reduced build error output ----------"
+    echo "-----------------------------------------------------"
 }
 
 show_warnings()
@@ -133,20 +141,22 @@ run_generate_fakes_script()
 
 show_fakes_stats()
 {
-    grep -c "BOOM" ${FAKES_BASENAME}-*.* | sed -e's/:/ generated /' -e's/$/ exploding fakes/'
+    # generated fakes for C start with 'EXPLODING'
+    # cpp test stub suggestions start with '// void'
+    grep -c '^EXPLODING\|^// void' ${FAKES_BASENAME}-*.* | sed -e's/:/ generated /' -e's/$/ exploding fakes/'
 }
 
 generate_fakes()
 {
-    echo "You have linker errors. -- Add a file, make stubs or use the gernerated exploding fakes"
-    if [ "$(ls ${FAKES_BASENAME}-*.* 2>/dev/null)" = "" ]; then
-        echo "Generating fakes"
-        run_generate_fakes_script $ERROR_FILE $FAKES_BASENAME
-        echo "Review generated fakes, and incrementally add them to the build:"
-        show_fakes_stats
-    else
-        echo "Generated fakes file already exists; delete or rename files for new gen-xfakes."
-    fi
+    echo "You have linker errors."
+    echo "Removing earlier generated fakes."
+    rm -f ${FAKES_BASENAME}-*.*
+    echo "Generating fakes."
+    run_generate_fakes_script $ERROR_FILE $FAKES_BASENAME
+    echo "Review generated fakes (${FAKES_BASENAME}-*.c*), to see your undefined external references."
+    echo "You can incrementally add the exploding fakes to the build or "
+    echo "resolve linker errors other ways."
+    show_fakes_stats
     return 0
 }
 
