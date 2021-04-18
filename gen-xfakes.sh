@@ -43,7 +43,7 @@ preambleCppFakes()
     * One at a time
       * Uncomment an exploing fake function definition.
       * Add needed the include file.
-      * Modify non-void function return types and propvide a return value.
+      * Modify non-void function return types and provide a return value.
       * Fix errors.
       * Work carefully. Use the compiler and link error output to test your changes.
 

@@ -1,8 +1,8 @@
 /*
     Fakes generated from: ./example-output/gcc-link-errors.txt
 
- 	Generated file to help to quickly stub C++ undefined external globals.
- 	
+    Generated file to help to quickly stub C++ undefined external globals.
+
     * One at a time
       * Add the file containing the global definition to your build or
         add the global data definition (and its declaratiob) to this file.

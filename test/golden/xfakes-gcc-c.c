@@ -1,14 +1,14 @@
 /*
     Fakes generated from: ./example-output/gcc-link-errors.txt
 
- 	Generated file to help to quickly stub C-linkage unresolved external references
+    Generated file to help to quickly stub C-linkage unresolved external references
 
- 	* When EXPLODING_FAKE_FOR is executed, a message is printed and the test run is existed
- 	* You could customize EXPLODING_FAKE_FOR to only fail the test
+    * When EXPLODING_FAKE_FOR is executed, a message is printed and the test run is existed
+    * You could customize EXPLODING_FAKE_FOR to only fail the test
     * Add this file to your test build.
     * Do not include the header files for the referenced functions. The C-linker does not care.
 
- 	Note: a EXPLODING_FAKE_FOR() is generated for global variables too.
+    Note: a EXPLODING_FAKE_FOR() is generated for global variables too.
     * They will explode upon write :-)
     * You might want to resolve these a different way.
 

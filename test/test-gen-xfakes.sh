@@ -126,7 +126,6 @@ cleanup()
 
 checkOutputSameAsGolden()
 {
-    # cleanup $1
     mkdir -p tmp
     gen_xfakes $TEST_DIR/example-output/$1-link-errors.txt $TEST_DIR/$TEMP_DIR/$FAKES_BASENAME-$1
     diffWithGolden $1 $FAKES_BASENAME-$1-c.c
@@ -150,6 +149,7 @@ testOutputSameAsGoldenVS()
 }
 
 #. $(dirname "$0")/gen-xfakes.sh 
+cleanup 
 . ../gen-xfakes.sh 
 . ../shunit2/shunit2
 
