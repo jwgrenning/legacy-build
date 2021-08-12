@@ -139,23 +139,26 @@ run_generate_fakes_script()
     bash gen-xfakes.sh $1 $2
 }
 
+show_fakes_stats_for()
+{
+    echo "$1 has $(grep -v "#define" $1 |grep -c "$2" | sed -e's/:/ generated /' -e's/$/ exploding fakes/')"
+}
+
 show_fakes_stats()
 {
-    # generated fakes for C start with 'EXPLODING'
-    # cpp test stub suggestions start with '// void'
-    grep -c '^EXPLODING\|^// void' ${FAKES_BASENAME}-*.* | sed -e's/:/ generated /' -e's/$/ exploding fakes/'
+    show_fakes_stats_for ${FAKES_BASENAME}-c.c "^EXPLODING"
+    show_fakes_stats_for ${FAKES_BASENAME}-cpp.cpp "^//.*BOOM"
+    show_fakes_stats_for ${FAKES_BASENAME}-cpp-globals.cpp "// cpp-global"
 }
 
 generate_fakes()
 {
-    echo "You have linker errors."
-    echo "Removing earlier generated fakes."
+    echo "You have linker errors. -- Add a file, make stubs or use the gernerated fakes"
+    echo "Removing earlier generated fakes "
     rm -f ${FAKES_BASENAME}-*.*
-    echo "Generating fakes."
+    echo "Generating fakes"
     run_generate_fakes_script $ERROR_FILE $FAKES_BASENAME
-    echo "Review generated fakes (${FAKES_BASENAME}-*.c*), to see your undefined external references."
-    echo "You can incrementally add the exploding fakes to the build or "
-    echo "resolve linker errors other ways."
+    echo "Review generated fakes, and incrementally add them to the build:"
     show_fakes_stats
     return 0
 }
@@ -172,7 +175,7 @@ legacy_build_suggestion()
 
 legacy_build_main()
 {
-    echo "legacy-build make from $1, INCLUDE_ROOT=$1"
+    echo "legacy-build make from $1, INCLUDE_ROOT=${INCLUDE_ROOT}"
     start_dir=${PWD}
     cd $1
     make 2>$ERROR_FILE
