@@ -149,8 +149,6 @@ cleanup()
 }
 
 
-cleanup 
+cleanup
 . ../gen-xfakes.sh 
 . ../shunit2/shunit2
-
-

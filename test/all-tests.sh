@@ -1,5 +1,9 @@
 #!/bin/bash
 
+
+ORIGIN_DIR=$PWD
+cd $(dirname $0)
+
 test_files=$(ls test-*.sh)
 test_out=all-test.out
 rm -f $test_out
@@ -13,4 +17,6 @@ if [ ! -z "$(grep "FAILED" $test_out)" ]; then
 fi
 
 grep -e OK -e Ran  $test_out
+
+cd $ORIGIN_DIR
 
