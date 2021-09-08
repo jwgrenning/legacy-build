@@ -1,6 +1,6 @@
 # Crash to Pass Toolkit
 
-## `legacy-build`, `legacy-suggest` and `legacy-gen-xfakes`
+## `legacy-build`, `legacy-suggest` and `gen-xfakes`
 
 This repo has two scripts to help C and C++ programmers drag unwilling legacy C and C++ into a test harness.
 
