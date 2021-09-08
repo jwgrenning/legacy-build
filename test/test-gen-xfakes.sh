@@ -119,11 +119,6 @@ diffWithGolden()
 }
 
 
-cleanup()
-{
-    rm -r $TEST_DIR/$TEMP_DIR   
-}
-
 checkOutputSameAsGolden()
 {
     mkdir -p tmp
@@ -147,6 +142,12 @@ testOutputSameAsGoldenVS()
 {
     checkOutputSameAsGolden vs
 }
+
+cleanup()
+{
+    rm -rf $TEST_DIR/$TEMP_DIR
+}
+
 
 cleanup 
 . ../gen-xfakes.sh 
