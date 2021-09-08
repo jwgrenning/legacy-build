@@ -1,0 +1,5 @@
+In file included from tests/FooBarTest.cpp:6:
+./somepath/somefile.h:10:10: fatal error: foo/bar/Filename.h: No such file or directory
+   10 | #include "foo/bar/Filename.h"
+      |          ^~~~~~~~~~~
+compilation terminated.

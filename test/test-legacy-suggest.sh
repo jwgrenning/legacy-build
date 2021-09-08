@@ -1,5 +1,5 @@
 #!/bin/sh
-. ../legacy-build.sh
+. ../legacy-suggest.sh
 
 TEST_DIR=.
 TEMP_DIR=tmp

@@ -148,7 +148,6 @@ testOutputSameAsGoldenVS()
     checkOutputSameAsGolden vs
 }
 
-#. $(dirname "$0")/gen-xfakes.sh 
 cleanup 
 . ../gen-xfakes.sh 
 . ../shunit2/shunit2

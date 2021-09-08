@@ -1,0 +1,20 @@
+LightSwitch::LightSwitch()
+LightSwitch::Off(int)
+LightSwitch::On(int)
+LightSwitch::~LightSwitch()
+RandomMinuteGenerator::Get()
+RandomMinuteGenerator::RandomMinuteGenerator(int, int)
+RandomMinuteGenerator::~RandomMinuteGenerator()
+Time::Time(Time const&)
+Time::getDay() const
+Time::getMinute() const
+Time::~Time()
+TimeService::TimeService()
+TimeService::getTime()
+TimeService::wakePeriodically(std::__1::unique_ptr<WakeUpAction, std::__1::default_delete<WakeUpAction> >)
+TimeService::~TimeService()
+WakeUpAction::WakeUpAction(int)
+WakeUpAction::~WakeUpAction()
+eventList
+log_debug
+typeinfo for WakeUpAction

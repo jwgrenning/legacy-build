@@ -1,0 +1,18 @@
+AcmeCrypto_RemoveKeyFile(char const*)
+AcmeDatabase_GetCloudserver1Linked(bool*)
+AcmeDatabase_SetCloudserver1Linked(bool)
+AcmeRegistry::AcmeRegistry()
+AcmeRegistry::Write(char const*, char const*)
+AcmeRegistry::instance
+AcmeRegistry::~AcmeRegistry()
+AcmeUpdateTZEnv(char const*, char const*)
+AcmeWpa::clock
+AcmeWpa::clockGetSeconds()
+AcmeWpa::restartDhcp(double, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*)
+log_it
+myJSON_AddStringToObject
+myJSON_CreateObject
+myJSON_Delete
+myJSON_GetObjectItem
+myJSON_IsString
+pthread_setname_np

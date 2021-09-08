@@ -1,6 +1,6 @@
 # Crash to Pass Toolkit
 
-## `legacy-build` and `gen-xfakes`
+## `legacy-build`, `legacy-suggest` and `legacy-gen-xfakes`
 
 This repo has two scripts to help C and C++ programmers drag unwilling legacy C and C++ into a test harness.
 
@@ -10,12 +10,11 @@ The recipe for getting legacy C/C++ is described in
 ### legacy-build.sh
 
 Runs the makefile in the working directory, captures the 
-output and makes a suggestion about how to solve the 
-current problem.  If you use CppUTest, some suggestions can be cut and pasted into your makefile.
+output, passes it to `legacy-suggest` which may make a suggestion about how
+to solve the current problem.  If you use CppUTest, some suggestions can be cut and pasted into your makefile.
 
-Finally, when you get to linker errors, legacy-build will
-run gen-xfakes to generate eploding fakes to get you past
-linker problems and on to running your code.
+Finally, when you get to linker errors, `legacy-build` will
+generate eploding fakes to get you past linker problems and on to running your code.
 
 Set your build so that it fails on the first error.
 For gcc and clang `-Wfatal-errors`.
@@ -24,8 +23,13 @@ So far, this has been tested on
 * ubuntu gcc version 9.3.0.
 * mac osx gcc version 7.4.0
 
+### legacy-suggest
 
-### gen-xfakes 
+Takes a gcc compiler error output, and filters the error, and makes a suggestion.
+
+The suggestions handle a couple common legacy code test-build problems, like missing includes and linker errors.
+
+### legacy-gen-xfakes 
 
 Generate exploding fakes from c/c++ linker error output (used for unit testing).  
 
@@ -35,16 +39,16 @@ executes and exploding fake.  For C++ errors, you need to do some editing.
 
 ## Usage
 
-Capture the linker error output and feed it to the gen-xfakes.sh
+Capture the linker error output and feed it to the exploding fakes generator
 
 ```
 
 $ make 2>error-output.txt
-$ path/to/gen-xfakes.sh error-output.txt xfakes
+$ path/to/legacy-gen-xfakes.sh error-output.txt xfakes
 
 ```
 
-`gen-xfakes.sh` produces three files with the supplied basename `xfakes`
+`legacy-gen-xfakes.sh` produces three files with the supplied basename `xfakes`
 
 |	|	|
 |---	|---	|

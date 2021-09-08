@@ -1,0 +1,12 @@
+Add_double
+Get_Digit_UINT32
+Set_Digit_UINT16
+__declspec(dllimport) const icu_62::ErrorCode::`vftable'
+__declspec(dllimport) public: enum UErrorCode __cdecl icu_62::ErrorCode::reset(void)
+__declspec(dllimport) public: signed char __cdecl icu_62::ErrorCode::isSuccess(void)const 
+__declspec(dllimport) public: static double __cdecl vtkLine::DistanceToLine(double * const,double * const,double * const)
+__declspec(dllimport) public: static double __cdecl vtkLine::DistanceToLine(double * const,double * const,double * const,double &,double * const)
+__declspec(dllimport) public: virtual signed char __cdecl icu_62::UCharCharacterIterator::hasNext(void)
+_imp_icudt62_dat
+errorHalt
+public: static class beta alpha::var
