@@ -202,5 +202,6 @@ gen_xfakes()
 
 }
 
-[ $0 = "gen-xfakes.sh" ] && gen_xfakes $@
-
+if [[ "$0" = "$BASH_SOURCE" ]]; then
+    gen_xfakes $@
+fi

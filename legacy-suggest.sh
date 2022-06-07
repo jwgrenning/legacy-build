@@ -2,11 +2,12 @@
 
 # gcc settings, -fatal-errors
 ERROR_FILE=tmp-build-errors.txt
-FAKES_BASENAME=tmp-fakes
+FAKES_BASENAME=tmp-xfakes
 INCLUDE_ROOT=${INCLUDE_ROOT:-.}
 MAKEFILE_INCLUDE_STR=${MAKEFILE_INCLUDE_STR:-"INCLUDE_DIRS += "}
 MAKEFILE_WARNING_STR=${MAKEFILE_WARNING_STR:-"CPPUTEST_WARNINGFLAGS += "}
-GENERATE_FAKES=gen-xfakes.sh
+
+
 
 declare -a not_declared=(
     "not\ declared\ in\ this\ scope"
@@ -135,11 +136,6 @@ show_other_compile_errors()
     return 0
 }
 
-run_generate_fakes_script()
-{
-    bash $GENERATE_FAKES $1 $2
-}
-
 show_fakes_stats_for()
 {
     echo "$1 has $(grep -v "#define" $1 |grep -c "$2" | sed -e's/:/ generated /' -e's/$/ exploding fakes/')"
@@ -158,7 +154,7 @@ generate_fakes()
     echo "Removing earlier generated fakes "
     rm -f ${FAKES_BASENAME}-*.*
     echo "Generating fakes"
-    run_generate_fakes_script $ERROR_FILE $FAKES_BASENAME
+    gen_xfakes $ERROR_FILE $FAKES_BASENAME
     echo "Review generated fakes, and incrementally add them to the build:"
     show_fakes_stats
     return 0
@@ -181,10 +177,17 @@ check_input()
 		exit 1
 	fi
 
-	if [ not -e "$1" ]; then
+	if [[ ! -e "$1" ]]; then
 		echo "Error file does not exist: $1"
 		exit 1
 	fi
 }
 
-[ $0 = "legacy-suggest.sh" ] && check_input && legacy_suggest $1
+legacy_build_suggestion()
+{
+    check_input $1 && legacy_suggest $1
+}
+
+if [[ "$0" = "$BASH_SOURCE" ]]; then
+    legacy_build_suggestion $1
+fi
