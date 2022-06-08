@@ -1,5 +1,4 @@
 #!/bin/sh
-. ../legacy-suggest.sh
 
 TEST_DIR=.
 TEMP_DIR=tmp
@@ -116,22 +115,67 @@ run_generate_fakes_script()
     echo "fake run_generate_fakes_script $1 $2"
 }
 
-testSayWhenOverwriteingGeneratedFakes()
+testFilterLinkerErrorsClang()
 {
-    LS_OUTPUT="something"
-    out="$(cat $EXAMPLES_DIR/gcc-link-error-legacy.txt | generate_fakes)"
-    assertContains "\n${out}\n" "Removing earlier generated fakes"
+    cpp_function1='  "SomeClass::someFunction(Foo&)", referenced from:'
+    cpp_function2='  "someFunction(Foo*)", referenced from:'
+    cpp_global='  "SomeClass::someGlobal", referenced from:'
+    cpp_typeinfo="typeinfo for SomeClass'"
+    c_undefined='  "_someGlobal", referenced from:'
+    assertEquals 'SomeClass::someFunction(Foo&)' "$(echo $cpp_function1 | isolateUndefinedSymbolsClang)"
+    assertEquals 'someFunction(Foo*)' "$(echo $cpp_function2 | isolateUndefinedSymbolsClang)"
+    assertEquals 'SomeClass::someGlobal' "$(echo $cpp_global | isolateUndefinedSymbolsClang)"
+    assertEquals '' "$(echo $cpp_typeinfo | isolateUndefinedSymbolsClang)"
+    assertEquals 'someGlobal' "$(echo $c_undefined | isolateUndefinedSymbolsClang)"
 }
 
-testLinkErrorSuggestions()
+testFilterLinkerErrorsGcc()
 {
-    LS_OUTPUT="nothing"
-    out="$(cat $EXAMPLES_DIR/gcc-link-error-legacy.txt | generate_fakes)"
-    assertContains "\n${out}\n" "${out}" "Generating fakes"
-    assertContains "\n${out}\n" "${out}" "run_generate_fakes_script"
+    cpp_function1="blah: undefined reference to \`SomeClass::someFunction(Foo&)'"
+    cpp_function2="blah: undefined reference to \`someFunction(Foo*)'"
+    cpp_global="blah: undefined reference to \`SomeClass::someGlobal'"
+    c_undefined="blah: undefined reference to \`someGlobal'"
+    assertEquals 'SomeClass::someFunction(Foo&)' "$(echo $cpp_function1 | isolateUndefinedSymbolsGcc)"
+    assertEquals 'someFunction(Foo*)' "$(echo $cpp_function2 | isolateUndefinedSymbolsGcc)"
+    assertEquals 'SomeClass::someGlobal' "$(echo $cpp_global | isolateUndefinedSymbolsGcc)"
+    assertEquals 'someGlobal' "$(echo $c_undefined | isolateUndefinedSymbolsGcc)"
+}
+
+testFilterLinkerErrorsVS_Cpp()
+{
+    cpp_function1="blah: LNK2019 blah symbol \"SomeClass::someFunction(Foo&)\" blah blah"
+    cpp_function2="blah: LNK2019 blah symbol \"__declspec(dllimport) someFunction(Foo*)\" blah blah"
+    cpp_global="blah: LNK2019 blah symbol \"SomeClass::someGlobal\" blah blah"
+    cpp_wierd_global="error LNK2001: unresolved external symbol \"public: static class beta alpha::var\" (?var@alpha@@2Vbeta@@A)"
+    assertEquals 'SomeClass::someFunction(Foo&)' "$(echo $cpp_function1 | isolateUndefinedSymbolsVS_Cpp)"
+    assertEquals '__declspec(dllimport) someFunction(Foo*)' "$(echo $cpp_function2 | isolateUndefinedSymbolsVS_Cpp)"
+    assertEquals 'SomeClass::someGlobal' "$(echo $cpp_global | isolateUndefinedSymbolsVS_Cpp)"
+    assertEquals 'public: static class beta alpha::var' "$(echo $cpp_wierd_global | isolateUndefinedSymbolsVS_Cpp)"
+}
+
+testFilterLinkerErrorsVS_Cpp_IgnoresC()
+{
+    c_undefined="blah: LNK2019 blah symbol _someGlobal referenced blah"
+    assertEquals '' "$(echo $c_undefined | isolateUndefinedSymbolsVS_Cpp)"
+}
+
+testFilterLinkerErrorsVS_C()
+{
+    c_undefined="blah: LNK2019 blah symbol _someGlobal referenced blah"
+    assertEquals 'someGlobal' "$(echo $c_undefined | isolateUndefinedSymbolsVS_C)"  
+}
+
+testFilterLinkerErrorsVS_C_IgnoresCpp()
+{
+    cpp_function1="blah: LNK2019 blah symbol \"SomeClass::someFunction(Foo&)\" blah blah"
+    cpp_function2="blah: LNK2019 blah symbol \"__declspec(dllimport) someFunction(Foo*)\" blah blah"
+    cpp_global="blah: LNK2019 blah symbol \"SomeClass::someGlobal\" blah blah"
+    assertEquals '' "$(echo $cpp_function1 | isolateUndefinedSymbolsVS_C)"
+    assertEquals '' "$(echo $cpp_function2 | isolateUndefinedSymbolsVS_C)"
+    assertEquals '' "$(echo $cpp_global | isolateUndefinedSymbolsVS_C)"
 }
 
 
+
+. ../legacy-suggest.sh
 . ../shunit2/shunit2
-
-

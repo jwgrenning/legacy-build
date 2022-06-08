@@ -3,10 +3,22 @@
 # gcc settings, -fatal-errors
 ERROR_FILE=tmp-build-errors.txt
 FAKES_BASENAME=tmp-xfakes
+SORTED_UNDEFINES=tmp-undefined-sorted.txt
 INCLUDE_ROOT=${INCLUDE_ROOT:-.}
 MAKEFILE_INCLUDE_STR=${MAKEFILE_INCLUDE_STR:-"INCLUDE_DIRS += "}
 MAKEFILE_WARNING_STR=${MAKEFILE_WARNING_STR:-"CPPUTEST_WARNINGFLAGS += "}
 
+# GEN_XFAKES=$(dirname $0)/gen-xfakes.sh
+# if [ ! -e "${GEN_XFAKES}" ]; then
+#     echo "error: missing ${GEN_XFAKES}"
+#     exit 1
+# fi
+# source $GEN_XFAKES
+
+looks_like()
+{
+    echo "Looks like you $1"
+}
 
 
 declare -a not_declared=(
@@ -22,17 +34,11 @@ declare -a include_tail=(
     ":\ No\ such\ file\ or\ directory"
     "'\ file\ not\ found"
     )
-
 declare -a linker_error_in_file=(
     "error:\ ld"
     "clang:\ error:\ linker"
     "LNK2019"
     )
-
-looks_like()
-{
-    echo "Looks like you $1"
-}
 
 show_not_declared()
 {
@@ -100,17 +106,6 @@ suggest_include_path()
     fi
 }
 
-link_errors_exist()
-{
-    for text in "${linker_error_in_file[@]}"; do
-        grep "${text}" $1 >/dev/null
-        if [ "$?" == "0" ]; then
-            return 0
-        fi
-    done
-    return 1
-}
-
 show_noise_reduced_heading()
 {
     echo "-----------------------------------------------------"
@@ -127,6 +122,18 @@ show_warnings()
     return 0
 }
 
+link_errors_exist()
+{
+    rm -f $SORTED_UNDEFINES
+    for text in "${linker_error_in_file[@]}"; do
+        grep "${text}" $1 >/dev/null
+        if [ "$?" == "0" ]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
 show_other_compile_errors()
 {
     link_errors_exist $1 && return 1
@@ -136,38 +143,76 @@ show_other_compile_errors()
     return 0
 }
 
-show_fakes_stats_for()
+linkErrorClang()
 {
-    echo "$1 has $(grep -v "#define" $1 |grep -c "$2" | sed -e's/:/ generated /' -e's/$/ exploding fakes/')"
+    grep ", referenced from:"
 }
 
-show_fakes_stats()
+isolateUndefinedSymbolsClang()
 {
-    show_fakes_stats_for ${FAKES_BASENAME}-c.c "^EXPLODING"
-    show_fakes_stats_for ${FAKES_BASENAME}-cpp.cpp "^//.*BOOM"
-    show_fakes_stats_for ${FAKES_BASENAME}-cpp-globals.cpp "// cpp-global"
+    linkErrorClang | sed -e's/^ *"//' -e's/".*//' -e's/^_//'
 }
 
-generate_fakes()
+linkErrorGcc()
 {
-    echo "You have linker errors. -- Add a file, make stubs or use the gernerated fakes"
-    echo "Removing earlier generated fakes "
-    rm -f ${FAKES_BASENAME}-*.*
-    echo "Generating fakes"
-    gen_xfakes $ERROR_FILE $FAKES_BASENAME
-    echo "Review generated fakes, and incrementally add them to the build:"
-    show_fakes_stats
-    return 0
+    grep ": undefined reference to "
+}
+
+isolateUndefinedSymbolsGcc()
+{
+    linkErrorGcc | sed -e's/.*`//' -e"s/'$//"
+}
+
+linkErrorVS_C()
+{
+    grep "LNK2019.*symbol _"
+}
+
+linkErrorVS_Cpp()
+{
+    grep "LNK2019\|LNK2001" | grep ".*symbol \""
+}
+
+isolateUndefinedSymbolsVS_C()
+{
+    linkErrorVS_C | sed -e's/^.*symbol _/__C__/'   -e's/ referenced.*//' -e's/__C__//'
+}
+
+isolateUndefinedSymbolsVS_Cpp()
+{
+    linkErrorVS_Cpp | sed -e's/^.*symbol "/__CPP__/'  -e's/" .*//' -e's/__CPP__//'
+}
+
+isolate_linker_errors()
+{
+    input_file=$1
+    must_exist $input_file
+    undefines=$(mktemp)
+
+    isolateUndefinedSymbolsGcc <$input_file >$undefines
+    isolateUndefinedSymbolsClang <$input_file >>$undefines
+    isolateUndefinedSymbolsVS_C <$input_file >>$undefines
+    isolateUndefinedSymbolsVS_Cpp <$input_file >>$undefines
+    LC_ALL=C sort $undefines | uniq >$SORTED_UNDEFINES
+    echo "You have linker errors.  See '${SORTED_UNDEFINES}' for a sorted list."
+    rm $undefines
+}
+
+file_empty()
+{
+    [ ! -s $1 ]
 }
 
 legacy_suggest()
 {
+    file_empty $1 && return 0
     show_noise_reduced_heading
     show_not_declared $1 && return 1
     show_missing_include_path $1 && return 1
     show_warnings $1 && return 1
     show_other_compile_errors $1 && return 1
-    link_errors_exist $1 && generate_fakes
+    link_errors_exist $1 && isolate_linker_errors $1
+    return 1
 }
 
 check_input()

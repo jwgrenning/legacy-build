@@ -1,4 +1,7 @@
-# /bin/sh
+#!/bin/bash
+
+FAKES_BASENAME=tmp-xfakes
+
 
 preambleCFakes()
 {
@@ -90,45 +93,45 @@ preambleCppGlobalFakes()
 EOM
 }
 
-linkErrorClang()
-{
-    grep ", referenced from:"
-}
+# linkErrorClang()
+# {
+#     grep ", referenced from:"
+# }
 
-isolateUndefinedSymbolsClang()
-{
-    linkErrorClang | sed -e's/^ *"//' -e's/".*//' -e's/^_//'
-}
+# isolateUndefinedSymbolsClang()
+# {
+#     linkErrorClang | sed -e's/^ *"//' -e's/".*//' -e's/^_//'
+# }
 
-linkErrorGcc()
-{
-    grep ": undefined reference to "
-}
+# linkErrorGcc()
+# {
+#     grep ": undefined reference to "
+# }
 
-isolateUndefinedSymbolsGcc()
-{
-    linkErrorGcc | sed -e's/.*`//' -e"s/'$//"
-}
+# isolateUndefinedSymbolsGcc()
+# {
+#     linkErrorGcc | sed -e's/.*`//' -e"s/'$//"
+# }
 
-linkErrorVS_C()
-{
-    grep "LNK2019.*symbol _"
-}
+# linkErrorVS_C()
+# {
+#     grep "LNK2019.*symbol _"
+# }
 
-linkErrorVS_Cpp()
-{
-    grep "LNK2019\|LNK2001" | grep ".*symbol \""
-}
+# linkErrorVS_Cpp()
+# {
+#     grep "LNK2019\|LNK2001" | grep ".*symbol \""
+# }
 
-isolateUndefinedSymbolsVS_C()
-{
-    linkErrorVS_C | sed -e's/^.*symbol _/__C__/'   -e's/ referenced.*//' -e's/__C__//'
-}
+# isolateUndefinedSymbolsVS_C()
+# {
+#     linkErrorVS_C | sed -e's/^.*symbol _/__C__/'   -e's/ referenced.*//' -e's/__C__//'
+# }
 
-isolateUndefinedSymbolsVS_Cpp()
-{
-    linkErrorVS_Cpp | sed -e's/^.*symbol "/__CPP__/'  -e's/" .*//' -e's/__CPP__//'
-}
+# isolateUndefinedSymbolsVS_Cpp()
+# {
+#     linkErrorVS_Cpp | sed -e's/^.*symbol "/__CPP__/'  -e's/" .*//' -e's/__CPP__//'
+# }
 
 usage()
 {
@@ -174,34 +177,58 @@ makeCppGlobalFakes()
     grep -v "(.*)" | grep "::" | sed -e's|^|// cpp-global |' -e's/$/;&/'
 }
 
+show_fakes_stats_for()
+{
+    echo "$1 has $(grep -v "#define" $1 |grep -c "$2" | sed -e's/:/ generated /' -e's/$/ exploding fakes/')"
+}
+
+show_fakes_stats()
+{
+    show_fakes_stats_for ${FAKES_BASENAME}-c.c "^EXPLODING"
+    show_fakes_stats_for ${FAKES_BASENAME}-cpp.cpp "^//.*BOOM"
+    show_fakes_stats_for ${FAKES_BASENAME}-cpp-globals.cpp "// cpp-global"
+}
+
+usage()
+{
+    echo "usage $0 sorted-undefined-symbols-file"
+    exit 1
+}
+
+
 gen_xfakes()
 {
-    if [ $# -ne 2 ]; then
-        usage
-    fi
-
     input_file=$1
     must_exist $input_file
-    undefines=$(mktemp)
-    sorted_undefines=$2-sorted-undefines.txt
+    sorted_undefines=$SORTED_UNDEFINES
+    must_exist $sorted_undefines
 
-    isolateUndefinedSymbolsGcc <$input_file >$undefines
-    isolateUndefinedSymbolsClang <$input_file >>$undefines
-    isolateUndefinedSymbolsVS_C <$input_file >>$undefines
-    isolateUndefinedSymbolsVS_Cpp <$input_file >>$undefines
-    LC_ALL=C sort $undefines | uniq >$sorted_undefines
-
-    fakes_c=$2-c.c
-    fakes_cpp=$2-cpp.cpp
-    fakes_cpp_globals=$2-cpp-globals.cpp
+    fakes_c=$3-c.c
+    fakes_cpp=$3-cpp.cpp
+    fakes_cpp_globals=$3-cpp-globals.cpp
 
     makeFakes $input_file $sorted_undefines C         $fakes_c
     makeFakes $input_file $sorted_undefines Cpp       $fakes_cpp
     makeFakes $input_file $sorted_undefines CppGlobal $fakes_cpp_globals
-    rm $undefines
 
 }
 
+generate_fakes()
+{
+    if [[ "$#" != "1" ]]; then
+        usage
+    fi
+    [ ! -e $SORTED_UNDEFINES ] && return 0
+    echo "Removing earlier generated fakes "
+    rm -f ${FAKES_BASENAME}-*.*
+    echo "Generating fakes"
+    gen_xfakes $ERROR_FILE $SORTED_UNDEFINES $FAKES_BASENAME
+    echo "Review generated fakes, and incrementally add them to the build:"
+    show_fakes_stats
+    return 0
+}
+
+
 if [[ "$0" = "$BASH_SOURCE" ]]; then
-    gen_xfakes $@
+    generate_fakes $@
 fi

@@ -9,6 +9,7 @@ test_out=all-test.out
 rm -f $test_out
 
 for test_file in $test_files; do
+    echo Running: $test_file
     bash ./$test_file | sed -e"s/OK/& -- ${test_file}/" -e"s/FAILED/& -- ${test_file}/" >>$test_out
 done
 

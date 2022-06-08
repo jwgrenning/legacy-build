@@ -15,10 +15,10 @@ In your local build directory add a file like this
 LEGACY_BUILD=~/repos/github/legacy-build/legacy-build.sh
 
 INCLUDE_ROOT=.
-MY_BUILD_DIR=.
-MY_BUILD_COMMAND=make
+BUILD_DIR=.
+BUILD_COMMAND=make
 
-bash $LEGACY_BUILD $MY_BUILD_DIR $MY_BUILD_COMMAND
+bash $LEGACY_BUILD $BUILD_DIR $INCLUDE_ROOT $BUILD_COMMAND
 ```
 
 ### legacy-build.sh -- main entry point
