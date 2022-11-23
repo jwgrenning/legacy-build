@@ -16,12 +16,11 @@ fi
 
 source $GEN_XFAKES
 
-BUILD_DIR=${1:-.}
-INCLUDE_ROOT=${2:-.}
-BUILD_COMMAND=${3:-make}
-
 legacy_build_main()
 {
+    BUILD_DIR=${1:-.}
+    INCLUDE_ROOT=${2:-.}
+    BUILD_COMMAND=${3:-make}
     echo "legacy-build from BUILD_DIR=$BUILD_DIR, INCLUDE_ROOT=${INCLUDE_ROOT}, BUILD_COMMAND=$BUILD_COMMAND"
     start_dir=${PWD}
     cd $BUILD_DIR
