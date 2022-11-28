@@ -18,10 +18,10 @@ source $GEN_XFAKES
 
 legacy_build_main()
 {
-    BUILD_DIR=${1:-.}
-    INCLUDE_ROOT=${2:-.}
-    BUILD_COMMAND=${3:-make}
-    echo "legacy-build from BUILD_DIR=$BUILD_DIR, INCLUDE_ROOT=${INCLUDE_ROOT}, BUILD_COMMAND=$BUILD_COMMAND"
+    BUILD_COMMAND=$1
+    BUILD_DIR=$2
+    INCLUDE_ROOT=$3
+    echo "legacy-build: BUILD_COMMAND=$BUILD_COMMAND, from BUILD_DIR=$BUILD_DIR, with INCLUDE_ROOT=${INCLUDE_ROOT}"
     start_dir=${PWD}
     cd $BUILD_DIR
     rm -r tmp-*.*
@@ -33,6 +33,27 @@ legacy_build_main()
     cd $start_dir
 }
 
+usage_exit()
+{
+    echo "usage: legacy-build command dir1 dir2"
+    echo "    command: to run, e.g. 'make'"
+    echo "    dir1: cd to dir1 to run command"
+    echo "    dir2: search for missing include files in dir2"
+    [[ $1 != "" ]] && echo "    **** $1 ****"
+    echo
+    exit 1
+}
+
+verify_params()
+{
+    [[ $1 == "" ]] && usage_exit ""
+    [[ $2 == "" ]] && usage_exit ""
+    [[ $3 == "" ]] && usage_exit ""
+    [[ ! -d "$2" ]] && usage_exit "'$2' is not a directory"
+    [[ ! -d "$3" ]] && usage_exit "'$3' is not a directory"
+}
+
 if [[ "$0" = "$BASH_SOURCE" ]]; then
+    verify_params $1 $2 $3
     legacy_build_main $1 $2 $3
 fi
