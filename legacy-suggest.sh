@@ -89,8 +89,7 @@ suggest_include_path()
     partial_path=$(dirname $1)
     search_path=${INCLUDE_ROOT}
 
-    echo "$ cd ${INCLUDE_ROOT}"
-    echo "$ find . -name ${target}"
+    echo "$ find ${INCLUDE_ROOT} -name ${target}"
     filepath=$(find . -name ${target})
     if [ "${filepath}" == "" ]; then
         echo "${target} not found under ${search_path}"
