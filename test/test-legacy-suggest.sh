@@ -25,7 +25,6 @@ find() #faking find
 test_show_missing_include_path()
 {
     out=$(show_missing_include_path $EXAMPLES_DIR/gcc-missing-include-path.txt)
-    echo "output: ${out}"
     assertEquals "show_missing_include_path" "0" "$?"
     assertContains "${out}" "Missing include path to Filename.h"
     assertContains "${out}" 'INCLUDE_DIRS += $(INCLUDE_ROOT)/foo/bar'

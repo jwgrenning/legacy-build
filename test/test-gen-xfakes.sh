@@ -16,9 +16,11 @@ testMakeCFakeIgnoresCpp()
     cpp_function1="SomeClass::someFunction(Foo&)"
     cpp_function2="someFunction(Foo*)"
     cpp_global="SomeClass::someGlobal"
+    cpp_destructor="vtable"
     assertEquals '' "$(echo $cpp_function1 | makeCFakes)"
     assertEquals '' "$(echo $cpp_function2 | makeCFakes)"
     assertEquals '' "$(echo $cpp_global | makeCFakes)"
+    assertEquals '' "$(echo $cpp_destructor | makeCFakes)"
 }
 
 testMakeCppFake()
@@ -27,10 +29,12 @@ testMakeCppFake()
     cpp_function2="someFunction(Foo*)"
     cpp_global="SomeClass::someGlobal"
     c_undefined="someGlobal"
+    cpp_destructor="vtable for FooBar"
     assertEquals '// void SomeClass::someFunction(Foo&) { BOOM_VOID_CPP }' "$(echo $cpp_function1 | makeCppFakes)"
     assertEquals '// void someFunction(Foo*) { BOOM_VOID_CPP }' "$(echo $cpp_function2 | makeCppFakes)"
     assertEquals '' "$(echo $cpp_global | makeCppFakes)"
     assertEquals '' "$(echo $c_undefined | makeCppFakes)"
+    assertEquals '// missing destructor FooBar { BOOM_VOID_CPP }' "$(echo $cpp_destructor | makeCppFakes)"
 }
 
 testMakeCppGlobalFake()
@@ -39,10 +43,12 @@ testMakeCppGlobalFake()
     cpp_function2="someFunction(Foo*)"
     cpp_global="SomeClass::someGlobal"
     c_undefined="someGlobal"
+    cpp_destructor="vtable for FooBar"
     assertEquals '' "$(echo $cpp_function1 | makeCppGlobalFakes)"
     assertEquals '' "$(echo $cpp_function2 | makeCppGlobalFakes)"
     assertEquals '// cpp-global SomeClass::someGlobal;' "$(echo $cpp_global | makeCppGlobalFakes)"
     assertEquals '' "$(echo $c_undefined | makeCppGlobalFakes)"
+    assertEquals '' "$(echo $cpp_destructor | makeCppGlobalFakes)"
 }
 
 
