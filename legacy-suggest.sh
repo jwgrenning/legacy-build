@@ -139,7 +139,8 @@ show_other_compile_errors()
     link_errors_exist $1 && return 1
     grep ": error: " $1
     [ "$?" = "1" ] && return 1
-    echo "Sorry, I can't help with this error."
+    echo "Sorry, I can't help with this build error."
+    echo "Sorry, I can't help with this build error. It's not one of the usual suspects" > outcome.special
     return 0
 }
 
