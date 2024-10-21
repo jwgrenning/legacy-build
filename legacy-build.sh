@@ -24,11 +24,12 @@ legacy_build_main()
     echo "legacy-build: BUILD_COMMAND=$BUILD_COMMAND, from BUILD_DIR=$BUILD_DIR, with INCLUDE_ROOT=${INCLUDE_ROOT}"
     start_dir=${PWD}
     cd $BUILD_DIR
-    rm -r tmp-*.*
+    rm -f tmp-*.*
     $BUILD_COMMAND 2>$ERROR_FILE
     cat $ERROR_FILE
     legacy_build_suggestion $ERROR_FILE
     generate_fakes $SORTED_UNDEFINES
+    rm -rf objs/
 
     cd $start_dir
 }
