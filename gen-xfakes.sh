@@ -164,12 +164,13 @@ makeFakes()
 
 makeCFakes()
 {
-    grep -v "::" | grep -v "(.*)" | grep -v "typeinfo" | sed -e's/^/EXPLODING_FAKE_FOR(/' -e's/$/)/'
+    grep -v "::\|vtable" | grep -v "(.*)" | grep -v "typeinfo" | sed -e's/^/EXPLODING_FAKE_FOR(/' -e's/$/)/'
 }
 
 makeCppFakes()
 {
-    grep "(.*)" | sed -e's|^|// void |' -e's/$/ { BOOM_VOID_CPP }/'
+    # grep "vtable" | sed -e's|vtable for \(.*$\)|// ~\1::\1|' -e's/$/ { BOOM_VOID_CPP }/'
+    grep "(.*)\|vtable" | sed -e's|^|// void |' -e's/$/ { BOOM_VOID_CPP }/' -e's/void vtable for/missing destructor/'
 }
 
 makeCppGlobalFakes()
