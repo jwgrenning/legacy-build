@@ -140,7 +140,7 @@ show_other_compile_errors()
     grep ": error: " $1
     [ "$?" = "1" ] && return 1
     echo "Sorry, I can't help with this build error."
-    echo "Sorry, I can't help with this build error. It's not one of the usual suspects" > outcome.special
+    rm -f outcome.special
     return 0
 }
 
@@ -195,7 +195,13 @@ isolate_linker_errors()
     isolateUndefinedSymbolsVS_C <$input_file >>$undefines
     isolateUndefinedSymbolsVS_Cpp <$input_file >>$undefines
     LC_ALL=C sort $undefines | uniq >$SORTED_UNDEFINES
+    echo "***********************************"
     echo "You have linker errors.  See '${SORTED_UNDEFINES}' for a sorted list."
+    echo "You have a choice to make."
+    echo "    1) Add the missing implementation to the build."
+    echo "    2) Add the generated exploding fakes to the build."
+    echo "    3) Make your own fake."
+    echo "***********************************"
     rm $undefines
 }
 
@@ -206,6 +212,7 @@ file_empty()
 
 legacy_suggest()
 {
+    echo "one of the recognized errors" > outcome.special
     file_empty $1 && return 0
     show_noise_reduced_heading
     show_not_declared $1 && return 1
